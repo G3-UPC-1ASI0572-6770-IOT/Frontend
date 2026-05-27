@@ -1,0 +1,37 @@
+.material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .icon-fill {
+            font-variation-settings: 'FILL' 1;
+        }
+
+.simple-nav {
+  display: flex;
+  gap: 10px;
+  margin: 0 0 16px;
+}
+
+.simple-nav-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 14px;
+  border-radius: 10px;
+  border: 1px solid rgba(0, 38, 138, 0.18);
+  background: rgba(0, 38, 138, 0.06);
+  color: #00268a;
+  font: 600 13px/1 'Manrope', sans-serif;
+  text-decoration: none;
+}
+
+.simple-nav-link.secondary {
+  border-color: rgba(197, 197, 212, 0.45);
+  background: #fff;
+  color: #444652;
+}
+
+@media (max-width: 900px) {
+  .simple-nav {
+    flex-direction: column;
+  }
+}

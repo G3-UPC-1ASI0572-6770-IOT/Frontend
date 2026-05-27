@@ -1,0 +1,89 @@
+<div class="owner-shell min-h-screen bg-background text-on-background">
+  <aside class="hidden md:flex fixed left-0 top-0 h-screen w-64 bg-surface-container-low/95 backdrop-blur border-r border-outline-variant/30 z-30">
+    <div class="w-full flex flex-col py-6">
+      <div class="flex items-center gap-3 mb-8 px-6">
+        <div class="w-10 h-10 flex items-center justify-center">
+          <img src="/icono.png" alt="ParkingNow Logo" class="w-full h-full object-contain" />
+        </div>
+        <div>
+          <h1 class="text-xl font-headline-md text-primary-container leading-none">ParkingNow</h1>
+          <p class="text-xs text-on-surface-variant">Owner Panel</p>
+        </div>
+      </div>
+
+      <nav class="flex-1 space-y-2">
+        @for (item of navItems; track item.route) {
+          <a
+            [routerLink]="item.route"
+            routerLinkActive="active"
+            class="nav-link flex items-center gap-3 px-4 py-2.5 text-on-surface-variant transition-all"
+          >
+            <span class="material-symbols-outlined text-[21px]">{{ item.icon }}</span>
+            <span class="text-sm font-semibold tracking-wide">{{ item.label }}</span>
+          </a>
+        }
+      </nav>
+
+      <div class="px-4 pt-4 border-t border-outline-variant/30">
+      <a [routerLink]="'/iam/sign-in'" class="export-link flex items-center justify-center gap-2 px-4 py-3 rounded-lg bg-primary-container text-white">
+        <span class="material-symbols-outlined">logout</span>
+        <span class="text-sm font-semibold">Logout</span>
+      </a>
+      </div>
+    </div>
+  </aside>
+
+  <header class="md:ml-64 h-[68px] bg-background/90 backdrop-blur border-b border-outline-variant/20 sticky top-0 z-20">
+    <div class="h-full px-4 md:px-8 flex items-center justify-between gap-4">
+      <button class="md:hidden p-2 rounded-lg border border-outline-variant" (click)="toggleMobileMenu()">
+        <span class="material-symbols-outlined">menu</span>
+      </button>
+
+      <div class="hidden sm:flex items-center bg-surface-container-low/90 border border-outline-variant/20 rounded-xl px-4 h-10 min-w-72">
+        <span class="material-symbols-outlined text-on-surface-variant">search</span>
+        <input class="w-full bg-transparent border-0 outline-none px-2 text-sm" placeholder="Search across dashboard..." />
+      </div>
+
+      <div class="flex items-center gap-2 md:gap-4">
+        <button class="p-2 rounded-full hover:bg-surface-container text-on-surface-variant transition-colors">
+          <span class="material-symbols-outlined">notifications</span>
+        </button>
+        <a routerLink="/profile/main" class="p-2 rounded-full hover:bg-surface-container text-on-surface-variant transition-colors" title="Settings">
+          <span class="material-symbols-outlined">settings</span>
+        </a>
+        <a routerLink="/profile/main" class="w-9 h-9 rounded-full border-2 border-outline-variant bg-primary-container text-white flex items-center justify-center font-bold text-sm shadow-sm no-underline" [title]="profileStore.profile().fullName">
+          {{ profileStore.profile().avatarInitials }}
+        </a>
+      </div>
+    </div>
+  </header>
+
+  @if (mobileMenuOpen()) {
+    <div class="md:hidden fixed inset-0 bg-black/40 z-40" (click)="closeMobileMenu()"></div>
+    <aside class="md:hidden fixed left-0 top-0 h-screen w-72 bg-white z-50 p-5 flex flex-col">
+      <div class="flex items-center justify-between mb-6">
+        <div class="flex items-center gap-3">
+          <div class="w-8 h-8 flex items-center justify-center">
+            <img src="/icono.png" alt="ParkingNow Logo" class="w-full h-full object-contain" />
+          </div>
+          <h2 class="text-xl font-headline-md text-primary">ParkingNow</h2>
+        </div>
+        <button class="p-1 text-on-surface-variant" (click)="closeMobileMenu()">
+          <span class="material-symbols-outlined">close</span>
+        </button>
+      </div>
+      <nav class="flex-1 space-y-2">
+        @for (item of navItems; track item.route) {
+          <a [routerLink]="item.route" (click)="closeMobileMenu()" routerLinkActive="active" class="nav-link flex items-center gap-3 px-4 py-3 rounded-xl text-on-surface-variant">
+            <span class="material-symbols-outlined">{{ item.icon }}</span>
+            <span class="text-sm font-semibold tracking-wide">{{ item.label }}</span>
+          </a>
+        }
+      </nav>
+    </aside>
+  }
+
+  <main class="md:ml-64 p-4 md:p-6 max-w-[1600px] animate-[fadeUp_.28s_ease-out]">
+    <router-outlet />
+  </main>
+</div>

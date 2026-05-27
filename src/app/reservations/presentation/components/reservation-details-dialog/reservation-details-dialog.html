@@ -1,0 +1,45 @@
+<article class="dialog-shell">
+  <header class="dialog-header">
+    <h4>Reservation Details</h4>
+    <button type="button" class="icon-btn" (click)="close()">
+      <span class="material-symbols-outlined">close</span>
+    </button>
+  </header>
+
+  <section class="dialog-body">
+    <div class="id-row">
+      <div>
+        <p class="label">Reservation ID</p>
+        <p class="value">{{ reservation.id }}</p>
+      </div>
+      <span class="status" [attr.data-status]="reservation.status">
+        <span class="dot"></span>
+        {{ reservation.status === 'active' ? 'Active' : reservation.status === 'expiring' ? 'Almost Expired' : 'Finished' }}
+      </span>
+    </div>
+
+    <div class="details-grid">
+      <div>
+        <p class="label">Space</p>
+        <p class="value">{{ reservation.space }}</p>
+      </div>
+      <div>
+        <p class="label">Driver</p>
+        <p class="value">{{ reservation.driver }}</p>
+      </div>
+      <div>
+        <p class="label">Start Time</p>
+        <p class="value">{{ reservation.start }}</p>
+      </div>
+      <div>
+        <p class="label">End Time</p>
+        <p class="value">{{ reservation.end }}</p>
+      </div>
+    </div>
+  </section>
+
+  <footer class="dialog-footer">
+    <button type="button" class="btn-secondary" (click)="close()">Close</button>
+    <button type="button" class="btn-primary" (click)="manageReservation()">Manage Reservation</button>
+  </footer>
+</article>

@@ -1,0 +1,307 @@
+<section class="events-view">
+  <app-page-header
+    eyebrow="EVENTS"
+    title="IoT Events History / Alerts"
+    subtitle="{{ view() === 'main' ? 'Review IoT events and relevant operational alerts from your parking lot.' : 'Monitor system health and historical sensor data.' }}">
+    <div class="context-pills">
+      <span><span class="material-symbols-outlined">local_parking</span> Parking lot: ParkingNow San Isidro</span>
+      <span><span class="material-symbols-outlined">memory</span> Node: ESP32-001</span>
+      <span><span class="material-symbols-outlined">schedule</span> Last updated: 1 min ago</span>
+      <span class="live"><i></i> {{ view() === 'main' ? 'Auto-updating' : 'Parking Lot: 85% Full' }}</span>
+    </div>
+    <button class="ghost-btn" [class.is-active]="view()==='main'" (click)="setView('main')"><span class="material-symbols-outlined">list_alt</span> Main View</button>
+    <button class="ghost-btn" [class.is-active]="view()==='empty'" (click)="setView('empty')"><span class="material-symbols-outlined">inbox</span> Empty State</button>
+    <button class="primary-btn" (click)="openDetails('Direct')"><span class="material-symbols-outlined">receipt_long</span> Event Details</button>
+    <a class="primary-btn" routerLink="/profile/edit"><span class="material-symbols-outlined">account_circle</span> Admin Profile</a>
+  </app-page-header>
+
+  @if (view() === 'empty') {
+    <div class="resolved-chip">
+      <i></i>
+      Alert resolved. Synchronization restored.
+      <button aria-label="Dismiss"><span class="material-symbols-outlined">close</span></button>
+    </div>
+  }
+
+  <nav class="flow-tabs" aria-label="Events flow">
+    <button class="flow-tab" [class.active]="view()==='main'" (click)="setView('main')">
+      <span>01</span>
+      IoT Events History / Alerts — Main View
+    </button>
+    <button class="flow-tab" [class.active]="view()==='empty'" (click)="setView('empty')">
+      <span>02</span>
+      IoT Events History / Alerts — Empty State
+    </button>
+  </nav>
+
+  <div class="path-controls" aria-label="Flow 4 paths">
+    <div>
+      <span>Path A</span>
+      <p>Empty State → Event Details Modal</p>
+    </div>
+    <button class="path-btn" (click)="showPathA()">
+      <span class="material-symbols-outlined">open_in_new</span>
+      Open details from empty
+    </button>
+    <div>
+      <span>Path B</span>
+      <p>Empty State → Main View → Empty State → Event Details Modal</p>
+    </div>
+    <button class="path-btn" (click)="showPathBMain()">Main View</button>
+    <button class="path-btn" (click)="showPathBEmpty()">Empty State</button>
+    <button class="path-btn strong" (click)="showPathBDetails()">Event Details</button>
+  </div>
+
+  @if (view() === 'main') {
+    <div class="summary-grid main-summary">
+      <article class="summary-card total">
+        <span class="summary-icon"><span class="material-symbols-outlined">receipt_long</span></span>
+        <div>
+          <p>Total Events Today</p>
+          <strong>24</strong>
+          <small>IoT events recorded</small>
+        </div>
+      </article>
+      <article class="summary-card critical">
+        <span class="summary-icon"><span class="material-symbols-outlined">warning</span></span>
+        <div>
+          <p>Critical Alerts</p>
+          <strong>2</strong>
+          <small>Require attention</small>
+        </div>
+      </article>
+      <article class="summary-card disconnect">
+        <span class="summary-icon"><span class="material-symbols-outlined">sensors_off</span></span>
+        <div>
+          <p>Node Disconnections</p>
+          <strong>1</strong>
+          <small>Connectivity issue</small>
+        </div>
+      </article>
+      <article class="summary-card changes">
+        <span class="summary-icon"><span class="material-symbols-outlined">sync_alt</span></span>
+        <div>
+          <p>Status Changes</p>
+          <strong>18</strong>
+          <small>Space status updates</small>
+        </div>
+      </article>
+    </div>
+
+    <section class="alerts-section">
+      <h2>Recent Alerts</h2>
+      <div class="alert-list">
+        <article class="alert-card critical">
+          <span class="material-symbols-outlined">crisis_alert</span>
+          <div>
+            <h3>IoT node disconnected</h3>
+            <p>Node ESP32-001 stopped reporting.</p>
+            <small>Detected 4 min ago</small>
+          </div>
+          <button>View node status</button>
+        </article>
+        <article class="alert-card warning">
+          <span class="material-symbols-outlined">warning</span>
+          <div>
+            <h3>Physical/logical discrepancy detected</h3>
+            <p>Space A3 was reserved but physical occupancy was detected.</p>
+            <small>Detected 4 min ago</small>
+          </div>
+          <button>View monitoring</button>
+        </article>
+        <article class="alert-card info">
+          <span class="material-symbols-outlined">notifications</span>
+          <div>
+            <h3>New reservation received</h3>
+            <p>Space B1 has a new active reservation.</p>
+            <small>Detected 1 min ago</small>
+          </div>
+          <button>View reservation</button>
+        </article>
+      </div>
+    </section>
+  } @else {
+    <div class="summary-grid empty-summary">
+      <article class="empty-stat">
+        <header><span>Total Events Today</span><span class="material-symbols-outlined">receipt_long</span></header>
+        <div><strong>0</strong><small>events</small></div>
+      </article>
+      <article class="empty-stat">
+        <header><span>Critical Alerts</span><span class="material-symbols-outlined">warning</span></header>
+        <div><strong>0</strong><small>alerts</small></div>
+      </article>
+      <article class="empty-stat">
+        <header><span>Node Disconnects</span><span class="material-symbols-outlined">sensors_off</span></header>
+        <div><strong>0</strong><small>nodes</small></div>
+      </article>
+      <article class="empty-stat">
+        <header><span>New Reservations</span><span class="material-symbols-outlined">event_available</span></header>
+        <div><strong>0</strong><small>received</small></div>
+      </article>
+    </div>
+
+    <section class="empty-alerts">
+      <h2>Recent Alerts</h2>
+      <div class="empty-panel">
+        <span class="material-symbols-outlined">verified_user</span>
+        <h3>No relevant changes at this moment.</h3>
+        <p>The panel is stable and consistent with the current operation.</p>
+        <small>New reservations, node disconnections or important status changes will appear here automatically.</small>
+      </div>
+    </section>
+  }
+
+  <section class="history-section">
+    <header>
+      <h2>IoT Events History</h2>
+      @if (view() === 'empty') {
+        <div class="history-filters">
+          <button>Last 7 Days <span class="material-symbols-outlined">expand_more</span></button>
+          <button>All Event Types <span class="material-symbols-outlined">expand_more</span></button>
+        </div>
+      }
+    </header>
+
+    @if (view() === 'main') {
+      <div class="table-card">
+        <div class="table-toolbar">
+          <label class="search">
+            <span class="material-symbols-outlined">search</span>
+            <input [ngModel]="query()" (ngModelChange)="query.set($event)" placeholder="Search events..." />
+          </label>
+          <button>All Event Types</button>
+          <div class="chip-group">
+            <button class="active">All</button>
+            <button>Info</button>
+            <button>Warning</button>
+            <button>Critical</button>
+          </div>
+          <button>All Spaces</button>
+          <button>mm/dd/yyyy</button>
+        </div>
+        <div class="events-table">
+          <div class="table-head">
+            <span>Time</span>
+            <span>Event Type</span>
+            <span>Space</span>
+            <span>Previous Status</span>
+            <span>New Status</span>
+            <span>Source</span>
+            <span>Node ID</span>
+            <span>Severity</span>
+            <span>Action</span>
+          </div>
+          @for (event of eventRows; track event.time + event.type) {
+            <div class="table-row">
+              <span>{{ event.time }}</span>
+              <strong>{{ event.type }}</strong>
+              <span class="space">{{ event.space }}</span>
+              <span class="state-chip muted">{{ event.previous }}</span>
+              <span class="state-chip" [class.occupied]="event.next === 'Occupied'" [class.available]="event.next === 'Available'">{{ event.next }}</span>
+              <span>{{ event.source }}</span>
+              <span>{{ event.node }}</span>
+              <span class="severity" [class]="event.severity">{{ severityLabel(event.severity) }}</span>
+              <button class="icon-btn" (click)="openDetails('Direct')" aria-label="Open event details"><span class="material-symbols-outlined">more_vert</span></button>
+            </div>
+          }
+        </div>
+        <footer class="pagination">
+          <span>Showing 1 to 5 of 24 entries</span>
+          <div><button disabled>Prev</button><button class="current">1</button><button>2</button><button>3</button><button>Next</button></div>
+        </footer>
+      </div>
+    } @else {
+      <div class="history-empty">
+        <span class="material-symbols-outlined">manage_search</span>
+        <h3>No IoT events found.</h3>
+        <p>There are no events registered in the selected period.</p>
+        <small>Try changing the date range or clearing filters.</small>
+        <div>
+          <button class="ghost-btn">Clear filters</button>
+          <button class="primary-btn"><span class="material-symbols-outlined">refresh</span> Refresh</button>
+        </div>
+      </div>
+    }
+  </section>
+
+  @if (detailsOpen()) {
+    <div class="modal-backdrop" role="presentation" (click)="closeDetails()">
+      <article class="details-modal" role="dialog" aria-modal="true" aria-labelledby="eventDetailsTitle" (click)="$event.stopPropagation()">
+        <header class="modal-header">
+          <h2 id="eventDetailsTitle"><span class="material-symbols-outlined">event_note</span> Event Details</h2>
+          <button class="close-btn" (click)="closeDetails()" aria-label="Close event details">
+            <span class="material-symbols-outlined">close</span>
+          </button>
+        </header>
+
+        <div class="modal-body">
+          <div class="record-line">
+            <div>
+              <span>EVENT RECORD</span>
+              <strong>EVT-2026-000392</strong>
+            </div>
+            <div class="record-chips">
+              <span class="flow-chip">{{ detailsPath() }}</span>
+              <span class="severity info"><i></i> Info</span>
+              <span class="time-chip"><span class="material-symbols-outlined">schedule</span> 10:42 AM</span>
+            </div>
+          </div>
+
+          <section class="description-block">
+            <p>The IoT node detected physical occupancy in Space A2.</p>
+          </section>
+
+          <section class="details-grid">
+            <div>
+              <span>Event type</span>
+              <strong>Occupancy detected</strong>
+            </div>
+            <div>
+              <span>Detected at</span>
+              <strong><span class="material-symbols-outlined">schedule</span> 10:42 AM</strong>
+            </div>
+            <div>
+              <span>Space</span>
+              <strong>A2</strong>
+            </div>
+            <div>
+              <span>Source</span>
+              <strong><span class="material-symbols-outlined">sensors</span> IoT Node</strong>
+            </div>
+            <div class="status-change">
+              <div>
+                <span>Previous status</span>
+                <strong class="state-chip available"><i></i> Available</strong>
+              </div>
+              <span class="material-symbols-outlined arrow">arrow_right_alt</span>
+              <div>
+                <span>New status</span>
+                <strong class="state-chip occupied"><i></i> Occupied</strong>
+              </div>
+            </div>
+          </section>
+
+          <section class="related-alerts">
+            <h3><span class="material-symbols-outlined">report</span> Related Alerts</h3>
+            <article>
+              <span class="related-icon"><span class="material-symbols-outlined">wifi_off</span></span>
+              <div>
+                <strong>Node disconnected</strong>
+                <p><b>Node ID:</b> ESP32-001 <i></i> Offline <span>18 min ago</span></p>
+              </div>
+              <button>View node status <span class="material-symbols-outlined">chevron_right</span></button>
+            </article>
+          </section>
+        </div>
+
+        <footer class="modal-actions">
+          <button class="ghost-btn" (click)="closeDetails()">Close</button>
+          <a class="primary-btn" routerLink="/monitoring">
+            View monitoring board
+            <span class="material-symbols-outlined">open_in_new</span>
+          </a>
+        </footer>
+      </article>
+    </div>
+  }
+</section>

@@ -1,0 +1,169 @@
+<section class="iot-view">
+  <app-page-header
+    eyebrow="IOT MONITORING"
+    title="IoT Node Association & Status"
+    subtitle="Link your physical IoT node and monitor its connection status.">
+    <div class="meta-pills">
+      <span><span class="material-symbols-outlined">local_parking</span> Parking lot: ParkingNow San Isidro</span>
+      <span class="success"><span class="material-symbols-outlined">link</span> Associated</span>
+      <span><span class="material-symbols-outlined">schedule</span> Last report: 1 min ago</span>
+    </div>
+    <button class="ghost-btn" (click)="resync()"><span class="material-symbols-outlined">sync</span> Check connection</button>
+    <a class="primary-btn" routerLink="/monitoring"><span class="material-symbols-outlined">visibility</span> Space Monitoring Board</a>
+  </app-page-header>
+
+  <nav class="flow-tabs" aria-label="IoT flow">
+    <a class="flow-tab active" routerLink="/iot-node">
+      <span>01</span>
+      IoT Node Association & Status
+    </a>
+    <a class="flow-tab" routerLink="/monitoring">
+      <span>02</span>
+      Space Monitoring Board
+    </a>
+  </nav>
+
+  <div class="iot-grid">
+    <article class="card association-card">
+      <header class="card-head">
+        <div class="title-wrap">
+          <span class="icon-badge"><span class="material-symbols-outlined">memory</span></span>
+          <h3>Node Association Status</h3>
+        </div>
+        <span class="state-pill online"><span></span>Associated</span>
+      </header>
+      <div class="node-info-grid">
+        <div class="info-tile">
+          <span class="tile-label">Node ID</span>
+          <strong>ESP32-001</strong>
+          <button class="mini-icon" aria-label="Copy node ID"><span class="material-symbols-outlined">content_copy</span></button>
+        </div>
+        <div class="info-tile">
+          <span class="tile-label">Node Code</span>
+          <strong class="mono">PN-IOT-2026-0001</strong>
+        </div>
+      </div>
+    </article>
+
+    <article class="card status-card">
+      <header class="card-head">
+        <div class="title-wrap">
+          <span class="icon-badge"><span class="material-symbols-outlined">router</span></span>
+          <h3>Current Node Status</h3>
+        </div>
+      </header>
+      <div class="online-row">
+        <div class="wifi-badge"><span class="material-symbols-outlined">wifi</span></div>
+        <div>
+          <strong>Online</strong>
+          <span><span class="material-symbols-outlined">history</span> Last report: 1 min ago</span>
+        </div>
+      </div>
+      <div class="status-metrics">
+        <div><span>Heartbeat</span><strong>Stable (30s)</strong></div>
+        <div><span>Data Status</span><strong class="blue">Updating</strong></div>
+      </div>
+      <span class="state-pill online compact"><span></span>Node Online</span>
+    </article>
+
+    <article class="card associate-card">
+      <header class="card-head">
+        <div class="title-wrap">
+          <span class="icon-badge"><span class="material-symbols-outlined">hub</span></span>
+          <h3>Associate IoT Node</h3>
+        </div>
+      </header>
+      <form class="associate-form" (submit)="$event.preventDefault(); associate()">
+        <label class="field wide">
+          <span>Node Code</span>
+          <input [ngModel]="newNode().id || 'PN-IOT-2026-0001'" (ngModelChange)="updateNew('id', $event)" name="nodeCode" />
+        </label>
+        <label class="field wide">
+          <span>Parking Lot</span>
+          <select [ngModel]="newNode().lot" (ngModelChange)="updateNew('lot', $event)" name="lot">
+            <option value="L01">ParkingNow San Isidro</option>
+            <option value="L02">ParkingNow Miraflores</option>
+            <option value="L03">ParkingNow San Borja</option>
+          </select>
+        </label>
+        <label class="field">
+          <span>Device Name</span>
+          <input [ngModel]="newNode().space" (ngModelChange)="updateNew('space', $event)" name="deviceName" placeholder="e.g. Zone A Controller" />
+        </label>
+        <label class="field">
+          <span>Description (Optional)</span>
+          <input name="description" placeholder="Location details..." />
+        </label>
+        <button class="primary-btn form-action" type="submit"><span class="material-symbols-outlined">link</span> Associate Node</button>
+      </form>
+    </article>
+
+    <article class="card spaces-card">
+      <header class="card-head">
+        <div class="title-wrap">
+          <span class="icon-badge"><span class="material-symbols-outlined">grid_view</span></span>
+          <h3>Connected Spaces</h3>
+        </div>
+        <span class="count-pill">4 Spaces</span>
+      </header>
+      <div class="connected-table">
+        <div class="connected-head"><span>Space ID</span><span>Status</span><span>Last Event</span></div>
+        <div><strong>A1</strong><span class="linked">Linked</span><span>Available detected</span></div>
+        <div><strong>A2</strong><span class="linked">Linked</span><span>Occupied detected</span></div>
+        <div><strong>A3</strong><span class="linked">Linked</span><span>Available detected</span></div>
+        <div><strong>B1</strong><span class="linked">Linked</span><span>Available detected</span></div>
+      </div>
+    </article>
+
+    <article class="card activity-card">
+      <header class="card-head">
+        <div class="title-wrap">
+          <span class="icon-badge"><span class="material-symbols-outlined">timeline</span></span>
+          <h3>Recent Node Activity</h3>
+        </div>
+      </header>
+      <div class="timeline">
+        <div class="event right">
+          <strong>Heartbeat Received</strong>
+          <span>Just now</span>
+          <p>Signal strength: Strong</p>
+        </div>
+        <div class="event left">
+          <strong>Occupancy Event</strong>
+          <span>2 mins ago</span>
+          <p>Space A2: Occupied</p>
+        </div>
+        <div class="event right">
+          <strong>Heartbeat Received</strong>
+          <span>30 mins ago</span>
+          <p>Signal strength: Strong</p>
+        </div>
+      </div>
+    </article>
+
+    <article class="card messages-card">
+      <header class="card-head">
+        <div class="title-wrap">
+          <span class="icon-badge"><span class="material-symbols-outlined">notifications_active</span></span>
+          <h3>System Messages</h3>
+        </div>
+      </header>
+      <div class="message-tags">
+        <span class="ok">Node Online</span>
+        <span class="info">Sync restored</span>
+        <span class="danger">Invalid node code</span>
+        <span class="warning">High latency detected</span>
+      </div>
+      <div class="terminal">
+        <div class="terminal-head">
+          <span>Terminal Log</span>
+          <div><i></i><i></i><i></i></div>
+        </div>
+        <p><span>[10:45:02]</span> <b>MSG_RCV:</b> HEARTBEAT_OK</p>
+        <p><span>[10:44:32]</span> <b>MSG_RCV:</b> HEARTBEAT_OK</p>
+        <p><span>[10:43:15]</span> <b class="green">EVT:</b> SP_A2_OCC_DET</p>
+        <p><span>[10:43:02]</span> <b>MSG_RCV:</b> HEARTBEAT_OK</p>
+      </div>
+    </article>
+  </div>
+</section>

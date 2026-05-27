@@ -1,0 +1,123 @@
+<main class="pn-auth">
+  <aside class="pn-panel">
+    <div class="pn-grid-bg"></div>
+    <div class="pn-panel-inner">
+      <header class="pn-logo">
+        <div class="pn-logo-mark"><img src="/icono.png" alt="ParkingNow" /></div>
+        <span>ParkingNow</span>
+      </header>
+
+      <div class="pn-panel-copy">
+        <div class="pn-iot-badge"><i></i> IoT Live</div>
+        <h1>Manage your parking with real-time IoT precision.</h1>
+        <p>Monitor spaces, accept reservations and track every vehicle movement — all from one admin dashboard.</p>
+
+        <div class="pn-lot-viz">
+          <div class="pn-lot-row">
+            <div class="pn-space pn-space--avail"><span>A1</span><i></i></div>
+            <div class="pn-space pn-space--occ"><span>A2</span><i></i></div>
+            <div class="pn-space pn-space--avail"><span>A3</span><i></i></div>
+          </div>
+          <div class="pn-lot-row">
+            <div class="pn-space pn-space--res"><span>B1</span><i></i></div>
+            <div class="pn-space pn-space--avail"><span>B2</span><i></i></div>
+            <div class="pn-space pn-space--occ"><span>B3</span><i></i></div>
+          </div>
+        </div>
+
+        <ul class="pn-features">
+          <li><span class="material-symbols-outlined">sensors</span> HC-SR04 live sensor telemetry</li>
+          <li><span class="material-symbols-outlined">event_available</span> Smart reservation management</li>
+          <li><span class="material-symbols-outlined">insights</span> Real-time operational analytics</li>
+        </ul>
+      </div>
+
+      <footer class="pn-panel-foot">© 2026 ParkingNow Smart IoT Platform</footer>
+    </div>
+  </aside>
+
+  <section class="pn-form-side">
+    <div class="pn-mobile-logo">
+      <img src="/icono.png" alt="ParkingNow" />
+      <span>ParkingNow</span>
+    </div>
+
+    <div class="pn-card">
+      <header class="pn-card-head">
+        <h2>Sign in</h2>
+        <p>Access your owner dashboard.</p>
+      </header>
+
+      <form [formGroup]="form" (ngSubmit)="submit()" class="pn-fields" novalidate>
+        <div class="pn-field">
+          <span>Email</span>
+          <div class="pn-input-wrap">
+            <span class="pn-icon material-symbols-outlined">mail</span>
+            <input formControlName="email" type="email" placeholder="owner@example.com" autocomplete="email" />
+          </div>
+          @if (form.controls.email.touched && form.controls.email.invalid) {
+            <span class="pn-err"><span class="material-symbols-outlined">error</span> Enter a valid email.</span>
+          }
+        </div>
+
+        <div class="pn-field">
+          <div class="pn-field-head">
+            <span>Password</span>
+            <a routerLink="/iam/forgot-password">Forgot password?</a>
+          </div>
+          <div class="pn-input-wrap pn-input--has-trail">
+            <span class="pn-icon material-symbols-outlined">lock</span>
+            <input [type]="showPassword() ? 'text' : 'password'" formControlName="password"
+              placeholder="Enter your password" autocomplete="current-password" />
+            <button type="button" class="pn-eye" (click)="toggleShowPassword()" tabindex="-1">
+              <span class="material-symbols-outlined">{{ showPassword() ? 'visibility_off' : 'visibility' }}</span>
+            </button>
+          </div>
+          @if (form.controls.password.touched && form.controls.password.invalid) {
+            <span class="pn-err"><span class="material-symbols-outlined">error</span> Minimum 6 characters.</span>
+          }
+        </div>
+
+        <label class="pn-remember">
+          <input type="checkbox" formControlName="remember" />
+          <span>Remember this device</span>
+        </label>
+
+        <button type="submit" class="pn-submit" [disabled]="submitting()">
+          @if (submitting()) {
+            <span class="material-symbols-outlined spin">progress_activity</span> Signing in...
+          } @else {
+            Sign In <span class="material-symbols-outlined">arrow_forward</span>
+          }
+        </button>
+      </form>
+
+      <div class="pn-divider"><span>or continue with</span></div>
+
+      <div class="pn-socials">
+        <button type="button" class="pn-social">
+          <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+            <path fill="#EA4335" d="M12 10.2v3.9h5.5c-.2 1.3-1.5 3.9-5.5 3.9-3.3 0-6.1-2.8-6.1-6.2s2.8-6.2 6.1-6.2c1.9 0 3.1.8 3.8 1.5l2.6-2.5C16.7 3 14.6 2 12 2 6.9 2 2.8 6.2 2.8 11.4S6.9 20.8 12 20.8c6.9 0 9.1-4.8 9.1-7.2 0-.5 0-.8-.1-1.1H12z"/>
+            <path fill="#34A853" d="M2.8 16.3l3.1-2.4c.8 2.5 3.2 4.1 6.1 4.1 3.7 0 5.2-2.5 5.5-3.9h3.5v2.5c-1.6 2.4-4.6 4.2-9 4.2-3.8 0-7.2-2.2-9.2-5.5z"/>
+            <path fill="#4A90E2" d="M21.1 10.3H12v3.8h5.5c-.3 1.4-1.8 3.9-5.5 3.9v2.8c4.4 0 7.4-1.8 9-4.2 1.3-1.9 1.9-4.4 1.9-6.6 0-.5 0-.8-.1-1.1h-1.7z"/>
+            <path fill="#FBBC05" d="M2.8 6.5c-1 1.4-1.6 3.1-1.6 4.9s.6 3.5 1.6 4.9l3.1-2.4c-.2-.7-.3-1.4-.3-2.1s.1-1.4.3-2.1L2.8 6.5z"/>
+          </svg>
+          Google
+        </button>
+        <button type="button" class="pn-social pn-social--dark">
+          <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+            <path fill="currentColor" d="M12 .5C5.6.5.5 5.7.5 12.2c0 5.2 3.3 9.5 7.9 11 .6.1.8-.3.8-.6v-2.2c-3.2.7-3.9-1.4-3.9-1.4-.5-1.4-1.3-1.8-1.3-1.8-1.1-.8.1-.8.1-.8 1.2.1 1.9 1.3 1.9 1.3 1.1 1.9 2.8 1.4 3.5 1.1.1-.8.4-1.4.7-1.7-2.5-.3-5.1-1.3-5.1-5.6 0-1.2.4-2.2 1.1-3-.1-.3-.5-1.4.1-3 0 0 .9-.3 3 .1a10 10 0 0 1 5.5 0c2.1-.4 3-.1 3-.1.6 1.6.2 2.7.1 3 .7.8 1.1 1.8 1.1 3 0 4.3-2.6 5.3-5.1 5.6.4.4.8 1 .8 2v2.9c0 .3.2.7.8.6 4.6-1.5 7.9-5.8 7.9-11C23.5 5.7 18.4.5 12 .5z"/>
+          </svg>
+          GitHub
+        </button>
+      </div>
+
+      <p class="pn-cta">No account? <a routerLink="/iam/sign-up">Create one</a></p>
+    </div>
+
+    <div class="pn-secure">
+      <span class="material-symbols-outlined">lock</span>
+      Secure access for registered parking owners.
+    </div>
+  </section>
+</main>

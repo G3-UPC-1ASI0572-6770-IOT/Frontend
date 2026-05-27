@@ -1,0 +1,220 @@
+<main class="pn-auth pn-auth--wide">
+  <aside class="pn-panel">
+    <div class="pn-grid-bg"></div>
+    <div class="pn-panel-inner">
+      <header class="pn-logo">
+        <div class="pn-logo-mark"><img src="/icono.png" alt="ParkingNow" /></div>
+        <span>ParkingNow</span>
+      </header>
+
+      <div class="pn-panel-copy">
+        <div class="pn-iot-badge"><i></i> New Account</div>
+        <h1>Digitize your parking operation in minutes.</h1>
+        <p>Register your lot, connect your IoT nodes and start accepting digital reservations from day one.</p>
+
+        <div class="pn-setup-steps">
+          <div class="pn-step-item">
+            <div class="pn-step-num">1</div>
+            <div>
+              <strong>Create your account</strong>
+              <span>Name, email and password</span>
+            </div>
+          </div>
+          <div class="pn-step-item">
+            <div class="pn-step-num">2</div>
+            <div>
+              <strong>Register your parking lot</strong>
+              <span>Location, capacity and type</span>
+            </div>
+          </div>
+          <div class="pn-step-item">
+            <div class="pn-step-num">3</div>
+            <div>
+              <strong>Connect your IoT nodes</strong>
+              <span>ESP32 + HC-SR04 sensor setup</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="pn-feat-grid">
+          <div class="pn-feat"><span class="material-symbols-outlined">dashboard</span><span>Owner Dashboard</span></div>
+          <div class="pn-feat"><span class="material-symbols-outlined">event_available</span><span>Reservations</span></div>
+          <div class="pn-feat"><span class="material-symbols-outlined">memory</span><span>IoT Monitor</span></div>
+          <div class="pn-feat"><span class="material-symbols-outlined">payments</span><span>Payments</span></div>
+        </div>
+      </div>
+
+      <footer class="pn-panel-foot">© 2026 ParkingNow Smart IoT Platform</footer>
+    </div>
+  </aside>
+
+  <section class="pn-form-side">
+    <div class="pn-mobile-logo">
+      <img src="/icono.png" alt="ParkingNow" />
+      <span>ParkingNow</span>
+    </div>
+
+    <div class="pn-card pn-card--wide">
+      <header class="pn-card-head">
+        <h2>Create your account</h2>
+        <p>Register to manage your parking lot with ParkingNow.</p>
+      </header>
+
+      <form [formGroup]="form" (ngSubmit)="submit()" novalidate>
+
+        <!-- ── Section 1: Account ── -->
+        <div class="pn-section-label">
+          <span class="material-symbols-outlined">person</span> Your Account
+        </div>
+        <div class="pn-form-grid">
+          <div class="pn-field" [class.pn-invalid]="form.controls.fullName.touched && form.controls.fullName.invalid">
+            <span>Full Name <em>*</em></span>
+            <div class="pn-input-wrap">
+              <span class="pn-icon material-symbols-outlined">person</span>
+              <input formControlName="fullName" type="text" placeholder="Enter your full name" autocomplete="name" />
+            </div>
+            @if (form.controls.fullName.touched && form.controls.fullName.invalid) {
+              <span class="pn-err"><span class="material-symbols-outlined">error</span> Full name is required.</span>
+            }
+          </div>
+
+          <div class="pn-field">
+            <span>Phone</span>
+            <div class="pn-input-wrap">
+              <span class="pn-icon material-symbols-outlined">call</span>
+              <input formControlName="phone" type="tel" placeholder="+51 999 000 000" autocomplete="tel" />
+            </div>
+          </div>
+
+          <div class="pn-field pn-field--full" [class.pn-invalid]="form.controls.email.touched && form.controls.email.invalid">
+            <span>Email Address <em>*</em></span>
+            <div class="pn-input-wrap">
+              <span class="pn-icon material-symbols-outlined">mail</span>
+              <input formControlName="email" type="email" placeholder="owner@example.com" autocomplete="email" />
+            </div>
+            @if (form.controls.email.touched && form.controls.email.invalid) {
+              <span class="pn-err"><span class="material-symbols-outlined">error</span> Enter a valid email.</span>
+            }
+          </div>
+
+          <div class="pn-field" [class.pn-invalid]="form.controls.password.touched && form.controls.password.invalid">
+            <span>Password <em>*</em></span>
+            <div class="pn-input-wrap pn-input--has-trail">
+              <span class="pn-icon material-symbols-outlined">lock</span>
+              <input formControlName="password" [type]="showPassword() ? 'text' : 'password'"
+                placeholder="Min. 8 characters" autocomplete="new-password" />
+              <button type="button" class="pn-eye" (click)="toggleShowPassword()" tabindex="-1">
+                <span class="material-symbols-outlined">{{ showPassword() ? 'visibility_off' : 'visibility' }}</span>
+              </button>
+            </div>
+            @if (form.controls.password.touched && form.controls.password.invalid) {
+              <span class="pn-err"><span class="material-symbols-outlined">error</span> Minimum 8 characters.</span>
+            }
+          </div>
+
+          <div class="pn-field" [class.pn-invalid]="form.controls.confirmPassword.touched && form.hasError('mismatch')">
+            <span>Confirm Password <em>*</em></span>
+            <div class="pn-input-wrap pn-input--has-trail">
+              <span class="pn-icon material-symbols-outlined">lock_reset</span>
+              <input formControlName="confirmPassword" [type]="showPassword() ? 'text' : 'password'"
+                placeholder="Repeat your password" autocomplete="new-password" />
+            </div>
+            @if (form.controls.confirmPassword.touched && form.hasError('mismatch')) {
+              <span class="pn-err"><span class="material-symbols-outlined">error</span> Passwords do not match.</span>
+            }
+          </div>
+        </div>
+
+        <!-- ── Section 2: Parking Lot ── -->
+        <div class="pn-section-divider"></div>
+        <div class="pn-section-label">
+          <span class="material-symbols-outlined">local_parking</span> Your Parking Lot
+        </div>
+        <div class="pn-form-grid">
+          <div class="pn-field pn-field--full" [class.pn-invalid]="form.controls.lotName.touched && form.controls.lotName.invalid">
+            <span>Parking Lot Name <em>*</em></span>
+            <div class="pn-input-wrap">
+              <span class="pn-icon material-symbols-outlined">storefront</span>
+              <input formControlName="lotName" type="text" placeholder="e.g. ParkingNow San Isidro" />
+            </div>
+            @if (form.controls.lotName.touched && form.controls.lotName.invalid) {
+              <span class="pn-err"><span class="material-symbols-outlined">error</span> Parking lot name is required.</span>
+            }
+          </div>
+
+          <div class="pn-field" [class.pn-invalid]="form.controls.lotAddress.touched && form.controls.lotAddress.invalid">
+            <span>Street Address <em>*</em></span>
+            <div class="pn-input-wrap">
+              <span class="pn-icon material-symbols-outlined">location_on</span>
+              <input formControlName="lotAddress" type="text" placeholder="e.g. Av. Javier Prado 1234" />
+            </div>
+            @if (form.controls.lotAddress.touched && form.controls.lotAddress.invalid) {
+              <span class="pn-err"><span class="material-symbols-outlined">error</span> Address is required.</span>
+            }
+          </div>
+
+          <div class="pn-field" [class.pn-invalid]="form.controls.lotDistrict.touched && form.controls.lotDistrict.invalid">
+            <span>District / City <em>*</em></span>
+            <div class="pn-input-wrap">
+              <span class="pn-icon material-symbols-outlined">map</span>
+              <input formControlName="lotDistrict" type="text" placeholder="e.g. San Isidro, Lima" />
+            </div>
+            @if (form.controls.lotDistrict.touched && form.controls.lotDistrict.invalid) {
+              <span class="pn-err"><span class="material-symbols-outlined">error</span> District is required.</span>
+            }
+          </div>
+
+          <div class="pn-field" [class.pn-invalid]="form.controls.lotCapacity.touched && form.controls.lotCapacity.invalid">
+            <span>Total Spaces <em>*</em></span>
+            <div class="pn-input-wrap">
+              <span class="pn-icon material-symbols-outlined">directions_car</span>
+              <input formControlName="lotCapacity" type="number" min="1" placeholder="e.g. 24" />
+            </div>
+            @if (form.controls.lotCapacity.touched && form.controls.lotCapacity.invalid) {
+              <span class="pn-err"><span class="material-symbols-outlined">error</span> Enter total spaces.</span>
+            }
+          </div>
+
+          <div class="pn-field pn-field--full">
+            <span>Parking Type</span>
+            <div class="pn-lot-type-group">
+              <button type="button" class="pn-lot-type-btn" [class.active]="form.controls.lotType.value === 'open'" (click)="setLotType('open')">
+                <span class="material-symbols-outlined">wb_sunny</span>
+                <span>Open</span>
+              </button>
+              <button type="button" class="pn-lot-type-btn" [class.active]="form.controls.lotType.value === 'covered'" (click)="setLotType('covered')">
+                <span class="material-symbols-outlined">roofing</span>
+                <span>Covered</span>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- ── Terms + Submit ── -->
+        <div class="pn-section-divider"></div>
+        <label class="pn-terms" [class.pn-invalid]="form.controls.agree.touched && form.controls.agree.invalid">
+          <span class="pn-checkbox">
+            <input formControlName="agree" type="checkbox" />
+            <span class="material-symbols-outlined">check</span>
+          </span>
+          <span>
+            I agree to the <a href="#">Terms of Service</a> and <a href="#">Privacy Policy</a>.
+            @if (form.controls.agree.touched && form.controls.agree.invalid) {
+              <span class="pn-err"><span class="material-symbols-outlined">error</span> You must accept the terms.</span>
+            }
+          </span>
+        </label>
+
+        <button class="pn-submit" type="submit" [disabled]="submitting()">
+          @if (submitting()) {
+            <span class="material-symbols-outlined spin">progress_activity</span> Creating account...
+          } @else {
+            Create Account <span class="material-symbols-outlined">arrow_forward</span>
+          }
+        </button>
+      </form>
+
+      <p class="pn-cta">Already have an account? <a routerLink="/iam/sign-in">Sign in</a></p>
+    </div>
+  </section>
+</main>

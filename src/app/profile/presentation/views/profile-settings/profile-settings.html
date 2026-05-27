@@ -1,0 +1,433 @@
+<section class="ps-page" aria-label="Profile Settings">
+
+  <app-page-header
+    eyebrow="ADMIN · SETTINGS"
+    [title]="store.state() === 'main' ? 'Profile & Settings' : 'Edit Profile'"
+    subtitle="Manage your admin account information, preferences and session settings.">
+    <div class="ctx-pills">
+      <span><span class="material-symbols-outlined">badge</span> {{ store.profile().role }}</span>
+      <span><span class="material-symbols-outlined">schedule</span> {{ store.profile().lastLogin }}</span>
+      @if (store.state() === 'edit') {
+        <span class="edit-pill"><i></i> Editing profile</span>
+      }
+    </div>
+    @if (store.state() === 'main') {
+      <button class="ghost-btn" type="button" (click)="openLogout()">
+        <span class="material-symbols-outlined">logout</span> Log out
+      </button>
+      <button class="primary-btn" type="button" (click)="edit()">
+        <span class="material-symbols-outlined">edit</span> Edit profile
+      </button>
+    }
+  </app-page-header>
+
+  <!-- ── STATUS CHIPS (edit mode) ──────────────────────────── -->
+  @if (store.state() === 'edit') {
+    <div class="ps-status-row" role="status" aria-live="polite">
+      @if (validationStatus() === 'saved') {
+        <span class="ps-status-chip ps-status-chip--success">
+          <i class="ps-dot ps-dot--green"></i> Profile updated successfully
+        </span>
+      }
+      @if (validationStatus() === 'noChanges') {
+        <span class="ps-status-chip ps-status-chip--warning">
+          <i class="ps-dot ps-dot--amber"></i> No changes detected
+        </span>
+      }
+      @if (validationStatus() === 'saving') {
+        <span class="ps-status-chip ps-status-chip--info">
+          <i class="ps-dot ps-dot--cyan"></i> Saving changes...
+        </span>
+      }
+    </div>
+  }
+
+  <!-- ── PROFILE SUMMARY STRIP (main view) ──────────────────── -->
+  @if (store.state() === 'main') {
+    <div class="ps-strip">
+      <div class="ps-strip__avatar" aria-hidden="true">{{ store.profile().avatarInitials }}</div>
+      <div class="ps-strip__body">
+        <h2 class="ps-strip__name">{{ store.profile().fullName }}</h2>
+        <div class="ps-strip__meta">
+          <span class="ps-strip__meta-item">
+            <span class="material-symbols-outlined">badge</span>
+            {{ store.profile().role }}
+          </span>
+          <span class="ps-strip__sep" aria-hidden="true">•</span>
+          <span class="ps-strip__meta-item">
+            <span class="material-symbols-outlined">location_on</span>
+            {{ store.profile().linkedLot }}
+          </span>
+        </div>
+      </div>
+      <span class="ps-active-badge">
+        <i class="ps-dot ps-dot--green"></i> Active status
+      </span>
+    </div>
+  }
+
+  <!-- ══════════════════════════════════════════════════════════
+       MAIN VIEW
+  ══════════════════════════════════════════════════════════════ -->
+  @if (store.state() === 'main') {
+    <div class="ps-grid ps-grid--2">
+
+      <!-- LEFT COLUMN ─────────────────────────────────────── -->
+      <div class="ps-col">
+
+        <!-- Profile Information -->
+        <article class="ps-card">
+          <header class="ps-card__head">
+            <span class="ps-card__icon"><span class="material-symbols-outlined">person</span></span>
+            <h3 class="ps-card__title">Profile Information</h3>
+          </header>
+          <div class="ps-info-stack">
+            <div class="ps-info-field ps-info-field--full">
+              <span class="ps-info-label">Full Name</span>
+              <div class="ps-info-val">{{ store.profile().fullName }}</div>
+            </div>
+            <div class="ps-info-row">
+              <div class="ps-info-field">
+                <span class="ps-info-label">Phone</span>
+                <div class="ps-info-val">{{ store.profile().phone }}</div>
+              </div>
+              <div class="ps-info-field">
+                <span class="ps-info-label">Position</span>
+                <div class="ps-info-val">{{ store.profile().jobTitle }}</div>
+              </div>
+            </div>
+            <div class="ps-info-field ps-info-field--full">
+              <span class="ps-info-label">Email</span>
+              <div class="ps-info-val">{{ store.profile().email }}</div>
+            </div>
+          </div>
+          <footer class="ps-card__foot">
+            <span class="material-symbols-outlined">info</span>
+            Only allowed profile fields can be updated from this section.
+          </footer>
+        </article>
+
+        <!-- Session Settings -->
+        <article class="ps-card">
+          <header class="ps-card__head">
+            <span class="ps-card__icon"><span class="material-symbols-outlined">security</span></span>
+            <h3 class="ps-card__title">Session Settings</h3>
+          </header>
+          <ul class="ps-list" role="list">
+            <li class="ps-list__row">
+              <span class="ps-list__key">Status</span>
+              <span class="ps-list__val">Active</span>
+            </li>
+            <li class="ps-list__row">
+              <span class="ps-list__key">Auto logout</span>
+              <span class="ps-list__val">Enabled after inactivity</span>
+            </li>
+            <li class="ps-list__row">
+              <span class="ps-list__key">Last login</span>
+              <span class="ps-list__val">{{ store.profile().lastLogin }}</span>
+            </li>
+          </ul>
+        </article>
+      </div>
+
+      <!-- RIGHT COLUMN ──────────────────────────────────────── -->
+      <div class="ps-col">
+
+        <!-- Account Information (read-only) -->
+        <article class="ps-card ps-card--gradient">
+          <header class="ps-card__head ps-card__head--between">
+            <div class="ps-card__head-left">
+              <span class="ps-card__icon"><span class="material-symbols-outlined">manage_accounts</span></span>
+              <h3 class="ps-card__title">Account Information</h3>
+            </div>
+            <span class="ps-badge-readonly" aria-label="Not editable">NOT EDITABLE</span>
+          </header>
+          <ul class="ps-list" role="list">
+            <li class="ps-list__row">
+              <span class="ps-list__key">Account ID</span>
+              <span class="ps-list__val ps-mono">{{ store.profile().accountId }}</span>
+            </li>
+            <li class="ps-list__row">
+              <span class="ps-list__key">Registered email</span>
+              <span class="ps-list__val">{{ store.profile().registeredEmail }}</span>
+            </li>
+            <li class="ps-list__row">
+              <span class="ps-list__key">Role</span>
+              <span class="ps-list__val">{{ store.profile().role }}</span>
+            </li>
+            <li class="ps-list__row">
+              <span class="ps-list__key">Created</span>
+              <span class="ps-list__val">{{ store.profile().created }}</span>
+            </li>
+            <li class="ps-list__row">
+              <span class="ps-list__key">Linked lot</span>
+              <span class="ps-list__val">{{ store.profile().linkedLot }}</span>
+            </li>
+          </ul>
+          <div class="ps-notice" role="note">
+            <span class="material-symbols-outlined">lock</span>
+            <span>Registered email, role and account ID cannot be modified from the profile section.</span>
+          </div>
+        </article>
+
+        <!-- Preferences -->
+        <article class="ps-card">
+          <header class="ps-card__head">
+            <span class="ps-card__icon"><span class="material-symbols-outlined">tune</span></span>
+            <h3 class="ps-card__title">Preferences</h3>
+          </header>
+          <div class="ps-prefs-stack">
+            <div class="ps-pref-field">
+              <span class="ps-info-label">Appearance</span>
+              <div class="ps-appearance-bar">
+                <button type="button" class="ps-appear-btn" [class.active]="store.profile().preferences.appearance === 'light'"
+                  (click)="store.setAppearance('light')">
+                  <span class="material-symbols-outlined">light_mode</span>
+                  Light
+                </button>
+                <button type="button" class="ps-appear-btn" [class.active]="store.profile().preferences.appearance === 'dark'"
+                  (click)="store.setAppearance('dark')">
+                  <span class="material-symbols-outlined">dark_mode</span>
+                  Dark
+                </button>
+              </div>
+            </div>
+            <div class="ps-pref-field">
+              <span class="ps-info-label">Language</span>
+              <div class="ps-select-wrap">
+                <select class="ps-select" [value]="store.profile().preferences.language"
+                  (change)="store.setLanguage($any($event.target).value)">
+                  <option>English</option>
+                  <option>Español (ES)</option>
+                </select>
+                <span class="material-symbols-outlined ps-select-caret">expand_more</span>
+              </div>
+            </div>
+          </div>
+        </article>
+      </div>
+    </div>
+
+  }
+
+  <!-- ══════════════════════════════════════════════════════════
+       EDIT / VALIDATION VIEW
+  ══════════════════════════════════════════════════════════════ -->
+  @else {
+    <form [formGroup]="form" (ngSubmit)="save()" novalidate>
+      <div class="ps-grid ps-grid--3">
+
+        <!-- WIDE COLUMN (spans 2 on desktop) ─────────────── -->
+        <div class="ps-col ps-col--wide">
+
+          <!-- Personal Information Card -->
+          <article class="ps-card">
+            <div class="ps-card__accent-bar"></div>
+            <header class="ps-card__head">
+              <h3 class="ps-card__title">Personal Information</h3>
+            </header>
+            <div class="ps-form-grid">
+
+              <!-- Full Name -->
+              <label class="ps-field" [class.ps-field--error]="form.controls.fullName.touched && form.controls.fullName.invalid">
+                <span class="ps-field__lbl">
+                  Full Name
+                  <span class="ps-required" aria-label="required">*</span>
+                </span>
+                <input
+                  formControlName="fullName"
+                  class="ps-input"
+                  [class.ps-input--err]="form.controls.fullName.touched && form.controls.fullName.invalid"
+                  placeholder="Enter your full name"
+                  autocomplete="name"
+                />
+                @if (form.controls.fullName.touched && form.controls.fullName.invalid) {
+                  <span class="ps-err-msg" role="alert">
+                    <span class="material-symbols-outlined">error</span>
+                    Full name is required.
+                  </span>
+                }
+              </label>
+
+              <!-- Job Title -->
+              <label class="ps-field">
+                <span class="ps-field__lbl">Job Title</span>
+                <input formControlName="jobTitle" class="ps-input" placeholder="e.g. Facility Manager" />
+              </label>
+
+              <!-- Email -->
+              <label class="ps-field" [class.ps-field--error]="form.controls.email.touched && form.controls.email.invalid">
+                <span class="ps-field__lbl">
+                  Email Address
+                  <span class="ps-required" aria-label="required">*</span>
+                </span>
+                <div class="ps-input-wrap">
+                  <span class="material-symbols-outlined ps-input-icon" aria-hidden="true">mail</span>
+                  <input
+                    formControlName="email"
+                    type="email"
+                    class="ps-input ps-input--icon"
+                    [class.ps-input--err]="form.controls.email.touched && form.controls.email.invalid"
+                    autocomplete="email"
+                  />
+                </div>
+                @if (form.controls.email.touched && form.controls.email.invalid) {
+                  <span class="ps-err-msg" role="alert">
+                    <span class="material-symbols-outlined">error</span>
+                    Enter a valid email address.
+                  </span>
+                }
+              </label>
+
+              <!-- Phone -->
+              <label class="ps-field">
+                <span class="ps-field__lbl">Phone Number</span>
+                <div class="ps-input-wrap">
+                  <span class="material-symbols-outlined ps-input-icon" aria-hidden="true">phone</span>
+                  <input
+                    formControlName="phone"
+                    class="ps-input ps-input--icon"
+                    autocomplete="tel"
+                    placeholder="+51 999 000 000"
+                  />
+                </div>
+              </label>
+
+            </div>
+          </article>
+
+          <!-- Interface Preferences Card -->
+          <article class="ps-card">
+            <div class="ps-card__accent-bar ps-card__accent-bar--cyan"></div>
+            <header class="ps-card__head">
+              <h3 class="ps-card__title">Interface Preferences</h3>
+            </header>
+            <div class="ps-form-grid">
+
+              <!-- Appearance -->
+              <div class="ps-field">
+                <span class="ps-field__lbl">Appearance</span>
+                <div class="ps-tiles">
+                  <button type="button" class="ps-tile" [class.ps-tile--active]="store.profile().preferences.appearance === 'light'"
+                    (click)="store.setAppearance('light')">
+                    <span class="material-symbols-outlined">light_mode</span>
+                    <span>Light</span>
+                  </button>
+                  <button type="button" class="ps-tile" [class.ps-tile--active]="store.profile().preferences.appearance === 'dark'"
+                    (click)="store.setAppearance('dark')">
+                    <span class="material-symbols-outlined">dark_mode</span>
+                    <span>Dark</span>
+                  </button>
+                  <button type="button" class="ps-tile" [class.ps-tile--active]="store.profile().preferences.appearance === 'system'"
+                    (click)="store.setAppearance('system')">
+                    <span class="material-symbols-outlined">brightness_auto</span>
+                    <span>System</span>
+                  </button>
+                </div>
+              </div>
+
+              <!-- Language -->
+              <div class="ps-field">
+                <span class="ps-field__lbl">Language</span>
+                <div class="ps-select-wrap">
+                  <select class="ps-select">
+                    <option>Español (ES)</option>
+                    <option>English</option>
+                  </select>
+                  <span class="material-symbols-outlined ps-select-caret">expand_more</span>
+                </div>
+              </div>
+
+            </div>
+          </article>
+        </div>
+
+        <!-- NARROW COLUMN (col 3 on desktop) ──────────────── -->
+        <div class="ps-col">
+
+          <!-- Account Info (read-only glass card) -->
+          <article class="ps-card ps-card--glass">
+            <header class="ps-card__head ps-card__head--between">
+              <h3 class="ps-card__title">Account Info</h3>
+              <span class="material-symbols-outlined ps-lock-icon" aria-label="Read only">lock</span>
+            </header>
+            <div class="ps-account-list">
+              <div class="ps-account-item">
+                <span class="ps-account-label">Account ID</span>
+                <div class="ps-account-val ps-mono">{{ store.profile().accountId }}</div>
+              </div>
+              <div class="ps-account-item">
+                <span class="ps-account-label">Role</span>
+                <div class="ps-account-val">
+                  <span class="material-symbols-outlined">badge</span>
+                  {{ store.profile().role }}
+                </div>
+              </div>
+              <div class="ps-account-item">
+                <span class="ps-account-label">Member Since</span>
+                <div class="ps-account-val">{{ store.profile().memberSince }}</div>
+              </div>
+              <div class="ps-account-item">
+                <span class="ps-account-label">Status</span>
+                <div class="ps-account-val ps-account-val--active">
+                  <i class="ps-dot ps-dot--green" aria-hidden="true"></i>
+                  Active
+                </div>
+              </div>
+            </div>
+            <p class="ps-readonly-note">Contact super-admin to change these fields.</p>
+          </article>
+
+          <!-- Security -->
+          <article class="ps-card">
+            <header class="ps-card__head">
+              <h3 class="ps-card__title">Security</h3>
+            </header>
+            <div class="ps-security-list">
+              <button type="button" class="ps-security-btn">
+                <span class="ps-security-btn__left">
+                  <span class="material-symbols-outlined">key</span>
+                  Change Password
+                </span>
+                <span class="material-symbols-outlined ps-chevron">chevron_right</span>
+              </button>
+              <button type="button" class="ps-security-btn">
+                <span class="ps-security-btn__left">
+                  <span class="material-symbols-outlined">shield</span>
+                  Two-Factor Auth
+                </span>
+                <span class="ps-2fa-badge" [class.ps-2fa-badge--on]="store.profile().twoFactorEnabled">
+                  {{ store.profile().twoFactorEnabled ? 'ENABLED' : 'DISABLED' }}
+                </span>
+              </button>
+            </div>
+          </article>
+        </div>
+      </div>
+
+      <!-- EDIT FOOTER -->
+      <footer class="ps-footer">
+        <button type="button" class="ps-btn-danger-outline" (click)="openLogout()">
+          <span class="material-symbols-outlined">logout</span>
+          Log out
+        </button>
+        <div class="ps-footer__right">
+          <button type="button" class="ps-btn-ghost" (click)="cancel()">Cancel</button>
+          <button type="submit" class="ps-btn-primary">
+            <span class="material-symbols-outlined">save</span>
+            Save changes
+          </button>
+        </div>
+      </footer>
+    </form>
+  }
+
+  <!-- ── TOAST ─────────────────────────────────────────────── -->
+  @if (savedToast()) {
+    <div class="ps-toast" role="status" aria-live="polite">
+      <span class="material-symbols-outlined">check_circle</span>
+      Profile updated successfully
+    </div>
+  }
+
+</section>

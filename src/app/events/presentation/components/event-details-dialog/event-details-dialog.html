@@ -1,0 +1,24 @@
+<article class="dialog-shell">
+  <header class="dialog-header">
+    <h4>Event Details</h4>
+    <button type="button" class="icon-btn" (click)="close()">
+      <span class="material-symbols-outlined">close</span>
+    </button>
+  </header>
+
+  <section class="dialog-body">
+    <div class="details-grid">
+      <div><p class="label">Event ID</p><p class="value">{{ alert.id }}</p></div>
+      <div><p class="label">Node</p><p class="value">ESP32-001</p></div>
+      <div><p class="label">Severity</p><p class="value">{{ alert.severity }}</p></div>
+      <div><p class="label">Time</p><p class="value">{{ alert.time }}</p></div>
+    </div>
+
+    <p class="message">{{ alert.message }}. The IoT node detected physical occupancy while transition was pending.</p>
+  </section>
+
+  <footer class="dialog-footer">
+    <button type="button" class="btn-secondary" (click)="close()">Close</button>
+    <button type="button" class="btn-primary" (click)="viewMonitoringBoard()">View monitoring board</button>
+  </footer>
+</article>

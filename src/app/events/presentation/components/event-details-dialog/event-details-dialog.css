@@ -1,0 +1,86 @@
+:host { display: block; }
+
+.dialog-shell {
+  width: min(100%, 760px);
+  border-radius: 16px;
+  border: 1px solid var(--color-outline-variant);
+  background: #fff;
+  overflow: hidden;
+}
+
+.dialog-header,
+.dialog-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px;
+  background: #fbf8ff;
+  border-bottom: 1px solid var(--color-outline-variant);
+}
+
+.dialog-footer {
+  justify-content: flex-end;
+  gap: 8px;
+  border-top: 1px solid var(--color-outline-variant);
+  border-bottom: 0;
+}
+
+.dialog-header h4 {
+  margin: 0;
+  font-size: 28px;
+  line-height: 36px;
+  color: var(--color-primary);
+  font-family: 'Hanken Grotesk', sans-serif;
+}
+
+.dialog-body {
+  padding: 16px;
+}
+
+.details-grid {
+  display: grid;
+  gap: 12px;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+
+.details-grid > div {
+  border: 1px solid var(--color-outline-variant);
+  border-radius: 12px;
+  padding: 12px;
+  background: #fff;
+}
+
+.label { margin: 0; font-size: 12px; line-height: 16px; color: var(--color-on-surface-variant); }
+.value { margin: 4px 0 0; font-size: 16px; line-height: 24px; color: var(--color-primary); font-weight: 600; }
+.message { margin: 16px 0 0; color: var(--color-on-surface-variant); }
+
+.icon-btn {
+  border: 0;
+  background: transparent;
+  border-radius: 9999px;
+  padding: 4px;
+  display: inline-flex;
+}
+
+.btn-secondary,
+.btn-primary {
+  border-radius: 8px;
+  font-size: 14px;
+  line-height: 20px;
+  padding: 8px 16px;
+}
+
+.btn-secondary {
+  border: 1px solid var(--color-outline-variant);
+  background: #fff;
+}
+
+.btn-primary {
+  border: 0;
+  background: var(--color-primary-container);
+  color: #fff;
+}
+
+@media (max-width: 768px) {
+  .details-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}

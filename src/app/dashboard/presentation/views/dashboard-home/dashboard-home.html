@@ -1,0 +1,155 @@
+<section class="dashboard-view">
+  <app-page-header
+    eyebrow="OWNER OVERVIEW"
+    title="Dashboard Overview"
+    subtitle="Monitor your parking lot operation in real time.">
+    <a routerLink="/events" class="export-btn">
+      <span class="material-symbols-outlined">notifications</span> Ver alertas
+    </a>
+    <a routerLink="/camera" class="export-btn">
+      <span class="material-symbols-outlined">videocam</span> Ver cámara
+    </a>
+  </app-page-header>
+
+  <div class="kpi-grid">
+    @for (k of store.kpis(); track k.id) {
+      <app-metric-card
+        [icon]="k.icon"
+        [label]="k.label"
+        [value]="k.value"
+        [delta]="k.delta"
+        [hint]="k.hint"
+        [trend]="k.trend"
+        [tone]="k.tone">
+      </app-metric-card>
+    }
+  </div>
+
+  <div class="content-grid">
+    <section class="chart-card">
+      <header class="card-head">
+        <div>
+          <h3>Occupancy Trend</h3>
+          <p>Hourly average across all parking lots — last 24h.</p>
+        </div>
+        <div class="legend">
+          <span class="dot dot-accent"></span> Occupancy %
+        </div>
+      </header>
+      <div class="chart-wrap">
+        <svg viewBox="0 0 600 200" preserveAspectRatio="none">
+          <defs>
+            <linearGradient id="grad" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%" stop-color="#00ACE8" stop-opacity="0.35" />
+              <stop offset="100%" stop-color="#00ACE8" stop-opacity="0" />
+            </linearGradient>
+          </defs>
+          <g class="grid">
+            @for (g of [25, 50, 75]; track g) {
+              <line [attr.x1]="12" [attr.x2]="588" [attr.y1]="g * 1.6 + 12" [attr.y2]="g * 1.6 + 12" />
+            }
+          </g>
+          <path [attr.d]="trendArea()" fill="url(#grad)" />
+          <path [attr.d]="trendPath()" fill="none" stroke="#00ACE8" stroke-width="3" stroke-linecap="round" />
+          @for (p of store.occupancyTrend(); track p.hour; let i = $index) {
+            <circle
+              [attr.cx]="12 + i * ((600 - 24) / (store.occupancyTrend().length - 1))"
+              [attr.cy]="160 - 12 - (p.value / 100) * (160 - 24)"
+              r="3" fill="#fff" stroke="#00ACE8" stroke-width="2" />
+          }
+        </svg>
+        <div class="x-axis">
+          @for (p of store.occupancyTrend(); track p.hour) {
+            <span>{{ p.hour }}h</span>
+          }
+        </div>
+      </div>
+    </section>
+
+    <section class="events-card">
+      <header class="card-head">
+        <div>
+          <h3>Recent Events</h3>
+          <p>Latest signals from your IoT network.</p>
+        </div>
+        <a routerLink="/events" class="text-link">View all <span class="material-symbols-outlined">chevron_right</span></a>
+      </header>
+      <ul class="event-list">
+        @for (e of store.recentEvents(); track e.id) {
+          <li class="event-row">
+            <span class="event-icon" [class]="'v-' + e.variant">
+              <span class="material-symbols-outlined">{{ e.icon }}</span>
+            </span>
+            <div class="event-body">
+              <p class="event-title">{{ e.title }}</p>
+              <p class="event-detail">{{ e.detail }}</p>
+            </div>
+            <span class="event-time">{{ e.time }}</span>
+          </li>
+        }
+      </ul>
+    </section>
+
+    <section class="lots-card">
+      <header class="card-head">
+        <div>
+          <h3>Top Parking Lots</h3>
+          <p>Highest occupancy lots today.</p>
+        </div>
+        <a routerLink="/parking-lot" class="text-link">Manage lots <span class="material-symbols-outlined">chevron_right</span></a>
+      </header>
+      <div class="lot-table">
+        <div class="lot-row lot-head">
+          <span>Lot</span><span>Occupancy</span><span>Revenue</span><span>Status</span>
+        </div>
+        @for (l of store.topLots(); track l.id) {
+          <div class="lot-row">
+            <div class="lot-name">
+              <div class="lot-avatar"><span class="material-symbols-outlined">local_parking</span></div>
+              <div>
+                <p class="lot-title">{{ l.name }}</p>
+                <p class="lot-id">{{ l.id }}</p>
+              </div>
+            </div>
+            <div class="lot-bar">
+              <div class="bar-track">
+                <div class="bar-fill" [style.width.%]="l.occupancy"></div>
+              </div>
+              <span class="bar-pct">{{ l.occupancy }}%</span>
+            </div>
+            <div class="lot-revenue">{{ l.revenue }}</div>
+            <div><app-status-chip [variant]="l.status"></app-status-chip></div>
+          </div>
+        }
+      </div>
+    </section>
+
+    <section class="health-card">
+      <header class="card-head">
+        <div>
+          <h3>System Health</h3>
+          <p>IoT network reliability snapshot.</p>
+        </div>
+      </header>
+      <div class="health-grid">
+        <div class="health-tile">
+          <span class="health-label">Nodes online</span>
+          <span class="health-val">97<span class="unit">%</span></span>
+          <div class="bar-track"><div class="bar-fill green" style="width: 97%"></div></div>
+        </div>
+        <div class="health-tile">
+          <span class="health-label">Avg signal</span>
+          <span class="health-val">82<span class="unit">dB</span></span>
+          <div class="bar-track"><div class="bar-fill accent" style="width: 82%"></div></div>
+        </div>
+        <div class="health-tile">
+          <span class="health-label">Avg battery</span>
+          <span class="health-val">76<span class="unit">%</span></span>
+          <div class="bar-track"><div class="bar-fill warn" style="width: 76%"></div></div>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  
+</section>

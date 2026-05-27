@@ -1,0 +1,189 @@
+<section class="spaces-view">
+  <header class="spaces-topbar">
+    <div>
+      <h1>Parking Spaces Management</h1>
+      <p>Configure, identify and manage the spaces of your parking lot.</p>
+    </div>
+    <div class="top-actions">
+      <a routerLink="/parking-lot/profile" class="ghost-btn">
+        <span class="material-symbols-outlined">arrow_back</span>
+        Parking Lot Profile
+      </a>
+      <a routerLink="/iot-node" class="primary-btn">
+        <span class="material-symbols-outlined">router</span>
+        Continue to IoT
+      </a>
+    </div>
+  </header>
+
+  <nav class="flow-tabs" aria-label="Parking lot configuration flow">
+    <a routerLink="/parking-lot/setup" class="flow-step">
+      <span class="step-index">1</span>
+      <span>
+        <strong>Parking Lot Setup</strong>
+        <small>Register basic information</small>
+      </span>
+    </a>
+    <a routerLink="/parking-lot/profile" class="flow-step">
+      <span class="step-index">2</span>
+      <span>
+        <strong>Parking Lot Profile</strong>
+        <small>Review public profile</small>
+      </span>
+    </a>
+    <a routerLink="/spaces" class="flow-step active">
+      <span class="step-index">3</span>
+      <span>
+        <strong>Parking Spaces Management</strong>
+        <small>Configure spaces</small>
+      </span>
+    </a>
+  </nav>
+
+  <section class="page-hero">
+    <p>Configure, identify and manage the spaces of your parking lot.</p>
+    <div class="lot-summary">
+      <div>
+        <span>PARKING LOT</span>
+        <strong>ParkingNow San Isidro</strong>
+      </div>
+      <i></i>
+      <div>
+        <span>TOTAL CAPACITY</span>
+        <strong>20 spaces</strong>
+      </div>
+      <button type="button">Save configuration</button>
+    </div>
+  </section>
+
+  <section class="summary-grid">
+    <article class="summary-card">
+      <div><span class="material-symbols-outlined">grid_view</span> Total spaces</div>
+      <strong>20</strong>
+    </article>
+    <article class="summary-card">
+      <div><span class="material-symbols-outlined">check_circle</span> Active spaces</div>
+      <strong>18</strong>
+    </article>
+    <article class="summary-card">
+      <div><span class="material-symbols-outlined">block</span> Temporarily unavailable</div>
+      <strong>2</strong>
+    </article>
+    <article class="summary-card muted">
+      <div><span class="material-symbols-outlined">help</span> Unconfigured spaces</div>
+      <strong>0</strong>
+    </article>
+  </section>
+
+  <section class="panel add-panel">
+    <h2>Add Spaces</h2>
+    <div class="add-grid">
+      <article>
+        <h3><span class="material-symbols-outlined">auto_awesome</span> Bulk Creation</h3>
+        <div class="field-grid">
+          <label>
+            <span>Number of spaces</span>
+            <input type="number" value="5" />
+          </label>
+          <label>
+            <span>Zone</span>
+            <select>
+              <option>Zone A</option>
+              <option>Zone B</option>
+            </select>
+          </label>
+          <label>
+            <span>Prefix</span>
+            <input value="A" />
+          </label>
+        </div>
+        <button type="button" class="wide-primary">
+          <span class="material-symbols-outlined">auto_awesome</span>
+          Generate spaces
+        </button>
+        <div class="preview-pills">
+          <span>A1</span><span>A2</span><span>A3</span><span>A4</span><span>A5</span>
+        </div>
+      </article>
+
+      <article>
+        <h3><span class="material-symbols-outlined">edit_square</span> Manual Creation</h3>
+        <div class="field-grid manual">
+          <label>
+            <span>Identifier</span>
+            <input placeholder="e.g. VIP-1" />
+          </label>
+          <label>
+            <span>Zone</span>
+            <select>
+              <option>Zone A</option>
+              <option>Zone B</option>
+            </select>
+          </label>
+        </div>
+        <button type="button" class="outline-primary">
+          <span class="material-symbols-outlined">add</span>
+          Add space manually
+        </button>
+      </article>
+    </div>
+  </section>
+
+  <section class="panel registered-panel">
+    <header>
+      <h2>Registered Spaces</h2>
+      <div class="table-tools">
+        <label class="search-wrap">
+          <span class="material-symbols-outlined">search</span>
+          <input
+            type="text"
+            [ngModel]="store.query()"
+            (ngModelChange)="store.setQuery($event)"
+            placeholder="Search by ID..." />
+        </label>
+        <div class="segmented">
+          <button type="button" [class.active]="store.filter()==='all'" (click)="store.setFilter('all')">All</button>
+          <button type="button" [class.active]="store.filter()==='available'" (click)="store.setFilter('available')">Active</button>
+          <button type="button" [class.active]="store.filter()==='offline'" (click)="store.setFilter('offline')">Disabled</button>
+        </div>
+      </div>
+    </header>
+
+    <div class="spaces-table">
+      <div class="table-row table-head">
+        <span>Space ID</span>
+        <span>Zone</span>
+        <span>Status</span>
+        <span>Availability</span>
+        <span>Last updated</span>
+        <span>Actions</span>
+      </div>
+      @for (s of store.filtered().slice(0, 4); track s.id) {
+        <div class="table-row">
+          <strong>{{ s.id.replace('0', '') }}</strong>
+          <span>{{ s.zone }}</span>
+          <span class="status-pill" [class.disabled]="s.status === 'offline'">
+            <i></i>
+            {{ s.status === 'offline' ? 'Disabled' : 'Active' }}
+          </span>
+          <span>{{ s.status === 'offline' ? 'Not offered' : 'Offered' }}</span>
+          <span>{{ s.status === 'offline' ? 'Oct 20, 08:15 AM' : 'Oct 24, 10:30 AM' }}</span>
+          <span class="row-actions">
+            <button type="button">Edit</button>
+            <button type="button" class="danger">{{ s.status === 'offline' ? 'Reactivate' : 'Disable' }}</button>
+          </span>
+        </div>
+      }
+    </div>
+
+    <footer class="table-footer">
+      <span>Showing 1 to 4 of 20 spaces</span>
+      <div><button type="button">‹</button><strong>1</strong><button type="button">›</button></div>
+    </footer>
+  </section>
+
+  <div class="status-row">
+    <span class="ok"><span class="material-symbols-outlined">check_circle</span> 5 spaces added successfully</span>
+    <span class="error"><span class="material-symbols-outlined">error</span> Space A1 already exists</span>
+  </div>
+</section>

@@ -1,0 +1,1 @@
+import"./chunk-4CLCTAJ7.js";var t=()=>import("./chunk-BRO5UBUY.js").then(e=>e.ReservationsManagement),o=[{path:"",loadComponent:t,title:"Reservations Management - ParkingNow"},{path:"active",loadComponent:t,title:"Active Reservations - ParkingNow"},{path:"history",loadComponent:t,title:"Reservation History - ParkingNow"}];export{o as reservationsRoutes};

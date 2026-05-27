@@ -1,0 +1,128 @@
+<section class="monitoring-view">
+  <app-page-header
+    eyebrow="LIVE OPERATIONS"
+    title="Space Monitoring Board"
+    subtitle="Monitor the real-time status of each parking space.">
+    <div class="top-pills">
+      <span><span class="material-symbols-outlined">local_parking</span> Parking lot: ParkingNow San Isidro</span>
+      <span><span class="material-symbols-outlined">schedule</span> Last updated: {{ lastUpdate() | date:'shortTime' }}</span>
+      <span class="online"><i></i> Node Online</span>
+    </div>
+    <a class="ghost-btn" routerLink="/iot-node"><span class="material-symbols-outlined">memory</span> Back to IoT Node</a>
+    <button class="primary-btn"><span class="material-symbols-outlined">videocam</span> View Local Camera</button>
+    <button class="round-btn" (click)="toggleLive()" [attr.aria-label]="isLive() ? 'Pause updates' : 'Resume updates'">
+      <span class="material-symbols-outlined">{{ isLive() ? 'notifications' : 'notifications_off' }}</span>
+    </button>
+  </app-page-header>
+
+  <nav class="flow-tabs" aria-label="IoT flow">
+    <a class="flow-tab" routerLink="/iot-node">
+      <span>01</span>
+      IoT Node Association & Status
+    </a>
+    <a class="flow-tab active" routerLink="/monitoring">
+      <span>02</span>
+      Space Monitoring Board
+    </a>
+  </nav>
+
+  <div class="summary-grid">
+    <article class="summary-card available">
+      <header><span>Available Spaces</span><i class="material-symbols-outlined">check_circle</i></header>
+      <div><strong>{{ boardStats.available }}</strong><em><b></b>Available</em></div>
+    </article>
+    <article class="summary-card occupied">
+      <header><span>Occupied Spaces</span><i class="material-symbols-outlined">directions_car</i></header>
+      <div><strong>{{ boardStats.occupied }}</strong><em><b></b>Occupied</em></div>
+    </article>
+    <article class="summary-card reserved">
+      <header><span>Reserved Spaces</span><i class="material-symbols-outlined">bookmark</i></header>
+      <div><strong>{{ boardStats.reserved }}</strong><em><b></b>Reserved</em></div>
+    </article>
+    <article class="summary-card offline">
+      <header><span>Offline Spaces</span><i class="material-symbols-outlined">visibility_off</i></header>
+      <div><strong>{{ boardStats.offline }}</strong><em><b></b>Offline</em></div>
+    </article>
+  </div>
+
+  <div class="status-row">
+    <article class="wide-card monitor-status">
+      <span class="round-icon"><span class="material-symbols-outlined">router</span></span>
+      <div>
+        <h3>Monitoring Status</h3>
+        <p>Node ID: ESP32-001</p>
+        <small>Last Report: Just now</small>
+      </div>
+      <span class="node-chip"><i></i> Node Online</span>
+    </article>
+    <article class="wide-card discrepancy">
+      <span class="round-icon warning"><span class="material-symbols-outlined">warning</span></span>
+      <div>
+        <h3>Physical / Logical Status</h3>
+        <p>Discrepancy detected in <strong>Space A3</strong></p>
+        <small>Physical status prevails.</small>
+      </div>
+      <button>Resolve Issue</button>
+    </article>
+  </div>
+
+  <div class="filter-card">
+    <label>
+      <span class="material-symbols-outlined">search</span>
+      <input placeholder="Search space ID..." />
+    </label>
+    <div class="filter-group">
+      <span>Status</span>
+      <button class="active">All</button>
+      <button>Available</button>
+      <button>Occupied</button>
+      <button>Reserved</button>
+      <button>Offline</button>
+    </div>
+    <div class="filter-group compact">
+      <span>Zone</span>
+      <button class="active">All</button>
+      <button>Zone A</button>
+      <button>Zone B</button>
+    </div>
+  </div>
+
+  <header class="section-title">
+    <h2>Current Space Status</h2>
+  </header>
+
+  <div class="spaces-grid">
+    @for (s of boardSpaces; track s.id) {
+      <article class="space-card" [class]="'space-card ' + s.status" [class.issue]="s.issue">
+        <header>
+          <h3>{{ s.id }}</h3>
+          <span><i></i>{{ statusLabel(s.status) }}</span>
+        </header>
+        <p>{{ s.note }}</p>
+        <a>{{ s.action }}</a>
+        @if (s.issue) {
+          <span class="corner-alert material-symbols-outlined">warning</span>
+        }
+      </article>
+    }
+  </div>
+
+  <div class="footer-grid">
+    <article class="footer-card">
+      <span class="round-icon neutral"><span class="material-symbols-outlined">videocam_off</span></span>
+      <div>
+        <h3>Local Camera</h3>
+        <p>Camera temporarily unavailable.</p>
+      </div>
+      <a>View Local Camera</a>
+    </article>
+    <article class="footer-card">
+      <span class="round-icon"><span class="material-symbols-outlined">sync</span></span>
+      <div>
+        <h3>Automatic Updates</h3>
+        <p><strong>Space A2</strong> changed to Occupied</p>
+        <small>No manual refresh required</small>
+      </div>
+    </article>
+  </div>
+</section>

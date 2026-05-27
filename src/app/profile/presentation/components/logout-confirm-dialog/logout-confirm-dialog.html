@@ -1,0 +1,50 @@
+<article class="ld-shell" role="dialog" aria-modal="true" aria-labelledby="ld-title" aria-describedby="ld-desc">
+
+  <!-- Icon -->
+  <div class="ld-icon-wrap" aria-hidden="true">
+    <span class="material-symbols-outlined">logout</span>
+  </div>
+
+  <!-- Title + description -->
+  <h4 id="ld-title" class="ld-title">Log out?</h4>
+  <p id="ld-desc" class="ld-desc">
+    You are about to close your administrator session. You will need to sign in
+    again to access protected dashboard features.
+  </p>
+
+  <!-- Account details panel -->
+  <div class="ld-details" role="group" aria-label="Session details">
+    <div class="ld-row">
+      <span class="ld-row__key">Account</span>
+      <span class="ld-row__val">{{ profileStore.profile().fullName }}</span>
+    </div>
+    <hr class="ld-divider" />
+    <div class="ld-row">
+      <span class="ld-row__key">Role</span>
+      <span class="ld-row__val">{{ profileStore.profile().role }}</span>
+    </div>
+    <hr class="ld-divider" />
+    <div class="ld-row">
+      <span class="ld-row__key">Status</span>
+      <span class="ld-status-badge">
+        <i class="ld-status-dot" aria-hidden="true"></i>
+        Active
+      </span>
+    </div>
+    <hr class="ld-divider" />
+    <div class="ld-row">
+      <span class="ld-row__key">Last login</span>
+      <span class="ld-row__val ld-muted">{{ profileStore.profile().lastLogin }}</span>
+    </div>
+  </div>
+
+  <!-- Actions -->
+  <div class="ld-actions">
+    <button type="button" class="ld-btn-cancel" (click)="cancel()">Cancel</button>
+    <button type="button" class="ld-btn-logout" (click)="logout()">
+      <span class="material-symbols-outlined">logout</span>
+      Log out
+    </button>
+  </div>
+
+</article>

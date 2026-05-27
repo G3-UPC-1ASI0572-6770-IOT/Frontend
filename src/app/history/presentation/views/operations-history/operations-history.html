@@ -1,0 +1,142 @@
+<section class="history-view">
+  <app-page-header
+    eyebrow="ADMIN · HISTORIAL"
+    title="Historial Operativo"
+    subtitle="Reservas, pagos y eventos IoT registrados en el sistema.">
+    <div class="ctx-pills">
+      <span><span class="material-symbols-outlined">local_parking</span> ParkingNow San Isidro</span>
+      <span><span class="material-symbols-outlined">calendar_today</span> Hoy — 2026-05-26</span>
+    </div>
+    <a routerLink="/events" class="ghost-btn">
+      <span class="material-symbols-outlined">memory</span> IoT Monitor
+    </a>
+    <button class="primary-btn">
+      <span class="material-symbols-outlined">download</span> Exportar
+    </button>
+  </app-page-header>
+
+  <!-- KPI summary -->
+  <div class="kpi-row">
+    <article class="kpi-card">
+      <div class="kpi-icon res"><span class="material-symbols-outlined">event_available</span></div>
+      <div class="kpi-body">
+        <p>Reservas cerradas</p>
+        <strong>47</strong>
+        <small>completadas + canceladas</small>
+      </div>
+    </article>
+    <article class="kpi-card">
+      <div class="kpi-icon pay"><span class="material-symbols-outlined">payments</span></div>
+      <div class="kpi-body">
+        <p>Pagos demo</p>
+        <strong>38</strong>
+        <small>S/ 1,893 acumulado</small>
+      </div>
+    </article>
+    <article class="kpi-card">
+      <div class="kpi-icon iot"><span class="material-symbols-outlined">memory</span></div>
+      <div class="kpi-body">
+        <p>Eventos IoT</p>
+        <strong>124</strong>
+        <small>cambios de estado</small>
+      </div>
+    </article>
+    <article class="kpi-card">
+      <div class="kpi-icon cancel"><span class="material-symbols-outlined">cancel</span></div>
+      <div class="kpi-body">
+        <p>Canceladas / Exp.</p>
+        <strong>9</strong>
+        <small>sin consumo</small>
+      </div>
+    </article>
+  </div>
+
+  <div class="table-card">
+    <!-- Type tabs -->
+    <nav class="type-tabs" role="tablist">
+      <button class="type-tab" [class.active]="activeTab() === 'all'" (click)="setTab('all')">
+        <span class="material-symbols-outlined">list_alt</span> Todos
+      </button>
+      <button class="type-tab" [class.active]="activeTab() === 'reservation'" (click)="setTab('reservation')">
+        <span class="material-symbols-outlined">event_available</span> Reservas
+      </button>
+      <button class="type-tab" [class.active]="activeTab() === 'payment'" (click)="setTab('payment')">
+        <span class="material-symbols-outlined">payments</span> Pagos
+      </button>
+      <button class="type-tab" [class.active]="activeTab() === 'iot'" (click)="setTab('iot')">
+        <span class="material-symbols-outlined">memory</span> Eventos IoT
+      </button>
+    </nav>
+
+    <!-- Toolbar -->
+    <div class="table-toolbar">
+      <label class="search-wrap">
+        <span class="material-symbols-outlined">search</span>
+        <input type="text" placeholder="Buscar referencia, espacio o detalle…" />
+      </label>
+      <div class="filter-pills">
+        <span>Estado</span>
+        <button class="pill-btn active">Todos</button>
+        <button class="pill-btn">Completado</button>
+        <button class="pill-btn">Cancelado</button>
+        <button class="pill-btn">Expirado</button>
+      </div>
+      <button class="date-btn">
+        <span class="material-symbols-outlined">date_range</span> Últimos 7 días
+        <span class="material-symbols-outlined expand">expand_more</span>
+      </button>
+    </div>
+
+    <!-- Table -->
+    <div class="hist-table">
+      <div class="table-head">
+        <span>Tipo</span>
+        <span>Referencia</span>
+        <span>Detalle</span>
+        <span>Estado</span>
+        <span>Fecha / Hora</span>
+        <span class="t-right">Ver</span>
+      </div>
+
+      @if (rows().length === 0) {
+        <div class="empty-state">
+          <span class="material-symbols-outlined">manage_search</span>
+          <h3>Sin registros en este período</h3>
+          <p>Intenta cambiar el tipo o el rango de fechas.</p>
+        </div>
+      }
+
+      @for (row of rows(); track row.ref) {
+        <div class="table-row">
+          <span class="type-badge" [class]="row.type.toLowerCase()">
+            <span class="material-symbols-outlined">{{ typeIcon(row.type) }}</span>
+            {{ row.type }}
+          </span>
+          <strong class="ref">{{ row.ref }}</strong>
+          <span class="detail-col">{{ row.detail }}</span>
+          <span class="status-dot" [class]="statusFromDetail(row.detail)">
+            <i></i>
+            @if (statusFromDetail(row.detail) === 'done') { Completado }
+            @else if (statusFromDetail(row.detail) === 'cancelled') { Cancelado }
+            @else if (statusFromDetail(row.detail) === 'expired') { Expirado }
+            @else { Info }
+          </span>
+          <span class="date-col">{{ row.at }}</span>
+          <span class="t-right">
+            <button class="icon-btn"><span class="material-symbols-outlined">open_in_new</span></button>
+          </span>
+        </div>
+      }
+    </div>
+
+    <footer class="table-footer">
+      <span>Mostrando {{ rows().length }} de 7 registros</span>
+      <div class="pagination">
+        <button disabled>‹</button>
+        <button class="pg-current">1</button>
+        <button>2</button>
+        <button>›</button>
+      </div>
+    </footer>
+  </div>
+</section>

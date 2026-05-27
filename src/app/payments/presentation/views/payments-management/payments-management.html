@@ -1,0 +1,117 @@
+<section class="payments-view">
+  <app-page-header
+    eyebrow="ADMIN · PAGOS"
+    title="Pagos Demo"
+    subtitle="Registro de pagos confirmados, pendientes y fallidos por reserva.">
+    <div class="ctx-pills">
+      <span><span class="material-symbols-outlined">local_parking</span> ParkingNow San Isidro</span>
+      <span><span class="material-symbols-outlined">schedule</span> Actualizado: hace 2 min</span>
+      <span class="live"><i></i> Sincronizando</span>
+    </div>
+    <a routerLink="/reservations" class="ghost-btn">
+      <span class="material-symbols-outlined">event_available</span> Ver reservas
+    </a>
+    <button class="primary-btn">
+      <span class="material-symbols-outlined">download</span> Exportar
+    </button>
+  </app-page-header>
+
+  <div class="kpi-row">
+    <article class="kpi-card">
+      <div class="kpi-icon total"><span class="material-symbols-outlined">receipt_long</span></div>
+      <div class="kpi-body">
+        <p>Total pagos</p>
+        <strong>24</strong>
+        <small>registros hoy</small>
+      </div>
+    </article>
+    <article class="kpi-card">
+      <div class="kpi-icon paid"><span class="material-symbols-outlined">check_circle</span></div>
+      <div class="kpi-body">
+        <p>Confirmados</p>
+        <strong>S/ 1,248</strong>
+        <small>20 pagos PAID</small>
+      </div>
+    </article>
+    <article class="kpi-card">
+      <div class="kpi-icon pending"><span class="material-symbols-outlined">hourglass_top</span></div>
+      <div class="kpi-body">
+        <p>Pendientes</p>
+        <strong>4</strong>
+        <small>aguardando confirmación</small>
+      </div>
+    </article>
+    <article class="kpi-card">
+      <div class="kpi-icon failed"><span class="material-symbols-outlined">cancel</span></div>
+      <div class="kpi-body">
+        <p>Fallidos</p>
+        <strong>0</strong>
+        <small>sin errores hoy</small>
+      </div>
+    </article>
+  </div>
+
+  <div class="table-card">
+    <div class="table-toolbar">
+      <label class="search-wrap">
+        <span class="material-symbols-outlined">search</span>
+        <input type="text" placeholder="Buscar por reserva o método…" />
+      </label>
+      <div class="filter-pills">
+        <span>Estado</span>
+        <button class="pill-btn active">Todos</button>
+        <button class="pill-btn">PAID</button>
+        <button class="pill-btn">PENDING</button>
+        <button class="pill-btn">FAILED</button>
+      </div>
+      <div class="filter-pills">
+        <span>Método</span>
+        <button class="pill-btn active">Todos</button>
+        <button class="pill-btn">DEMO_CARD</button>
+        <button class="pill-btn">YAPE</button>
+        <button class="pill-btn">CASH</button>
+      </div>
+      <button class="date-btn">
+        <span class="material-symbols-outlined">calendar_today</span> Hoy
+      </button>
+    </div>
+
+    <div class="pay-table">
+      <div class="table-head">
+        <span>Reserva</span>
+        <span>Monto</span>
+        <span>Método</span>
+        <span>Estado</span>
+        <span>Fecha / Hora</span>
+        <span class="t-right">Acción</span>
+      </div>
+      @for (row of rows; track row.reservation) {
+        <div class="table-row">
+          <strong class="ref">{{ row.reservation }}</strong>
+          <span class="amount">{{ row.amount }}</span>
+          <span class="method-chip">{{ row.method }}</span>
+          <span class="status-dot" [class]="row.status.toLowerCase()">
+            <i></i>{{ row.status }}
+          </span>
+          <span class="date-col">{{ row.date }}</span>
+          <span class="t-right">
+            <button class="icon-btn" title="Ver detalle">
+              <span class="material-symbols-outlined">open_in_new</span>
+            </button>
+          </span>
+        </div>
+      }
+    </div>
+
+    <footer class="table-footer">
+      <span>Mostrando 1–{{ rows.length }} de 24 registros</span>
+      <div class="pagination">
+        <button disabled>‹</button>
+        <button class="pg-current">1</button>
+        <button>2</button>
+        <button>3</button>
+        <button>›</button>
+      </div>
+    </footer>
+  </div>
+</section>
