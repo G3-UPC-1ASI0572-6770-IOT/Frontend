@@ -1,266 +1,155 @@
-<section class="reservations-view" [class.modal-open]="showDetails()">
+<section class="reservations-view">
   <app-page-header
-    eyebrow="RESERVATIONS"
-    title="Reservations Management"
-    subtitle="Monitor active reservations and review reservation history.">
-    <div class="context-pills">
-      <span><span class="material-symbols-outlined">local_parking</span> Parking lot: ParkingNow San Isidro</span>
-      <span><span class="material-symbols-outlined">schedule</span> Last updated: 1 min ago</span>
-      <span class="live"><i></i> Reservations updating in real time</span>
-    </div>
-    <button class="ghost-btn" (click)="setView('management')"><span class="material-symbols-outlined">dashboard</span> Management</button>
-    <button class="primary-btn"><span class="material-symbols-outlined">add</span> Create Booking</button>
-    <a class="ghost-btn" routerLink="/events"><span class="material-symbols-outlined">notifications_active</span> IoT Alerts</a>
+    eyebrow="OWNER · RESERVATIONS"
+    title="Reservations"
+    subtitle="Monitor active reservations and history for your parking lot.">
   </app-page-header>
 
-  <nav class="flow-tabs" aria-label="Reservations flow">
-    <button class="flow-tab" [class.active]="view()==='management'" (click)="setView('management')">
-      <span>01</span> Reservations Management
-    </button>
-    <button class="flow-tab" [class.active]="view()==='active'" (click)="setView('active')">
-      <span>02</span> Active Reservations
-    </button>
-    <button class="flow-tab" [class.active]="view()==='history'" (click)="setView('history')">
-      <span>03</span> Reservation History
-    </button>
-  </nav>
-
-  @if (view() === 'active') {
-    <div class="feedback">
-      <span class="material-symbols-outlined">info</span>
-      New reservation received for Space A3.
+  <!-- Summary KPIs -->
+  <div class="summary-grid" role="list" aria-label="Reservation statistics">
+    <div class="summary-card active" role="listitem">
+      <header>
+        Active <i aria-hidden="true"><span class="material-symbols-outlined">book_online</span></i>
+      </header>
+      <strong aria-label="{{ store.stats().active }} active reservations">{{ store.stats().active }}</strong>
     </div>
-  }
-
-  <div class="summary-grid">
-    <article class="summary-card active">
-      <header><span>Active Reservations</span><i class="material-symbols-outlined">event_available</i></header>
-      <strong>3</strong>
-    </article>
-    <article class="summary-card warning">
-      <header><span>Almost Expired</span><i class="material-symbols-outlined">timer</i></header>
-      <strong>1</strong>
-    </article>
-    <article class="summary-card consumed">
-      <header><span>Consumed Today</span><i class="material-symbols-outlined">check_circle</i></header>
-      <strong>8</strong>
-    </article>
-    <article class="summary-card danger">
-      <header><span>Expired / Cancelled</span><i class="material-symbols-outlined">cancel</i></header>
-      <strong>2</strong>
-    </article>
+    <div class="summary-card warning" role="listitem">
+      <header>
+        Expiring Soon <i aria-hidden="true"><span class="material-symbols-outlined">schedule</span></i>
+      </header>
+      <strong aria-label="{{ store.stats().expiring }} expiring reservations">{{ store.stats().expiring }}</strong>
+    </div>
+    <div class="summary-card consumed" role="listitem">
+      <header>
+        Consumed <i aria-hidden="true"><span class="material-symbols-outlined">check_circle</span></i>
+      </header>
+      <strong aria-label="{{ store.stats().finished }} consumed reservations">{{ store.stats().finished }}</strong>
+    </div>
+    <div class="summary-card danger" role="listitem">
+      <header>
+        Cancelled <i aria-hidden="true"><span class="material-symbols-outlined">cancel</span></i>
+      </header>
+      <strong aria-label="{{ store.stats().cancelled }} cancelled reservations">{{ store.stats().cancelled }}</strong>
+    </div>
   </div>
 
+  <!-- Content card with tabs -->
   <div class="content-card">
-    <div class="tabs-line">
-      <button [class.active]="view() !== 'history'" (click)="setView('active')">Active Reservations</button>
-      <button [class.active]="view() === 'history'" (click)="setView('history')">Reservation History</button>
+    <div class="tabs-line" role="tablist" aria-label="Reservation tabs">
+      <button role="tab" [attr.aria-selected]="activeTab() === 'active'"
+        [class.active]="activeTab() === 'active'" (click)="setTab('active')">
+        Active &amp; Expiring
+      </button>
+      <button role="tab" [attr.aria-selected]="activeTab() === 'history'"
+        [class.active]="activeTab() === 'history'" (click)="setTab('history')">
+        History
+      </button>
     </div>
 
-    @if (view() !== 'history') {
-      <div class="table-toolbar active-toolbar">
-        <div class="mini-filters">
-          <span>Status</span>
-          <button>All</button>
-          <button class="selected">Active</button>
-          <button>Almost expired</button>
-        </div>
-        <div class="mini-filters">
-          <span>Space</span>
-          <button class="selected">All</button>
-          <button>A1</button>
-          <button>A2</button>
-          <button>A3</button>
-          <button>B1</button>
-        </div>
+    @if (store.loading()) {
+      <div class="feedback" role="status" aria-live="polite">
+        <span class="material-symbols-outlined" aria-hidden="true">sync</span> Loading reservations…
       </div>
+    }
 
-      <div class="reservation-table active-table">
-        <div class="table-head">
-          <span>Reservation ID</span>
-          <span>Space</span>
-          <span>Driver</span>
-          <span>Start Time</span>
-          <span>Time Remaining</span>
-          <span>Status</span>
-          <span>Ticket Code</span>
-          <span class="right">Actions</span>
+    <!-- Active tab -->
+    @if (activeTab() === 'active') {
+      <div class="reservation-table active-table" role="region" aria-label="Active reservations">
+        <div class="table-head" role="row">
+          <span role="columnheader">ID</span>
+          <span role="columnheader">Space</span>
+          <span role="columnheader">Parking Lot</span>
+          <span role="columnheader">Driver</span>
+          <span role="columnheader">Created</span>
+          <span role="columnheader">Expires</span>
+          <span role="columnheader">Status</span>
+          <span role="columnheader" class="right">Action</span>
         </div>
-        @for (r of activeRows; track r.id) {
-          <button class="table-row" (click)="openActiveDetail(r)">
-            <strong>{{ r.id }}</strong>
-            <span class="space-chip">{{ r.space }}</span>
-            <span>{{ r.driver }}</span>
-            <span>{{ r.start }}</span>
-            <span [class.warn-text]="r.status === 'expiring'">{{ r.remaining }}</span>
-            <span class="status-pill" [class]="r.status"><i></i>{{ statusLabel(r.status) }}</span>
-            <span class="mono">{{ r.ticket }}</span>
-            <span class="details">View details <span class="material-symbols-outlined">chevron_right</span></span>
-          </button>
+
+        @for (r of store.filtered(); track r.id) {
+          <div class="table-row" role="row">
+            <span class="mono" role="cell" style="font-size:12px;color:#9ca3af">#{{ r.id }}</span>
+            <span role="cell">
+              <span class="space-chip" [attr.aria-label]="'Space ' + r.spaceLabel">{{ r.spaceLabel }}</span>
+            </span>
+            <span role="cell" style="font-size:12px">{{ r.parkingLotName }}</span>
+            <span role="cell" style="font-size:12px;color:#444652">{{ r.driverEmail }}</span>
+            <span role="cell" style="font-size:12px;color:#757684">{{ formatDate(r.createdAt) }}</span>
+            <span role="cell" [class.warn-text]="r.status === 'expiring'" style="font-size:12px">
+              {{ timeLeft(r.expiresAt) }}
+            </span>
+            <span role="cell">
+              <span class="status-pill" [class]="r.status" [attr.aria-label]="'Status: ' + statusLabel(r.status)">
+                <i aria-hidden="true"></i> {{ statusLabel(r.status) }}
+              </span>
+            </span>
+            <span role="cell" class="right">
+              <button class="ghost-btn" style="padding:6px 10px;font-size:11px"
+                (click)="cancel(r.id)"
+                [attr.aria-label]="'Cancel reservation ' + r.id">
+                Cancel
+              </button>
+            </span>
+          </div>
+        }
+
+        @empty {
+          <div class="empty-example" role="status">
+            <span><span class="material-symbols-outlined" aria-hidden="true">book_online</span></span>
+            <h3>No active reservations</h3>
+            <p>Active reservations will appear here when drivers book spaces.</p>
+          </div>
         }
       </div>
+    }
 
-      @if (view() === 'active') {
-        <div class="empty-example">
-          <span class="material-symbols-outlined">event_busy</span>
-          <h3>No active reservations</h3>
-          <p>There are currently no active reservations matching your filters. New reservations will appear here automatically.</p>
+    <!-- History tab -->
+    @if (activeTab() === 'history') {
+      <div class="reservation-table history-table" role="region" aria-label="Reservations history">
+        <div class="table-head" role="row">
+          <span role="columnheader">ID</span>
+          <span role="columnheader">Space</span>
+          <span role="columnheader">Parking Lot</span>
+          <span role="columnheader">Driver</span>
+          <span role="columnheader">Created</span>
+          <span role="columnheader">Consumed/Cancelled</span>
+          <span role="columnheader">Status</span>
+          <span role="columnheader" class="right">—</span>
         </div>
-      }
-    } @else {
-      <div class="table-toolbar history-toolbar">
-        <label class="search">
-          <span class="material-symbols-outlined">search</span>
-          <input [ngModel]="query()" (ngModelChange)="query.set($event)" placeholder="Search ID, driver, or space..." />
-        </label>
-        <div class="mini-filters">
-          <span>Status</span>
-          <button>All</button>
-          <button class="selected">Consumed</button>
-          <button>Expired</button>
-          <button>Cancelled</button>
-        </div>
-        <div class="selects">
-          <button>Last 30 days <span class="material-symbols-outlined">expand_more</span></button>
-          <button>All Spaces <span class="material-symbols-outlined">expand_more</span></button>
-        </div>
-      </div>
 
-      <div class="reservation-table history-table">
-        <div class="table-head">
-          <span>Reservation ID</span>
-          <span>Space</span>
-          <span>Driver</span>
-          <span>Date</span>
-          <span>Time window</span>
-          <span>Final status</span>
-          <span>Closure reason</span>
-          <span class="right">Actions</span>
-        </div>
-        @for (r of historyRows; track r.id) {
-          <button class="table-row" (click)="openHistoryDetail(r)">
-            <strong>{{ r.id }}</strong>
-            <span class="space-chip">{{ r.space }}</span>
-            <span>{{ r.driver }}</span>
-            <span>{{ r.date }}</span>
-            <span>{{ r.window }}</span>
-            <span class="status-pill" [class]="r.status"><i></i>{{ statusLabel(r.status) }}</span>
-            <span>{{ r.reason }}</span>
-            <span class="details">View details</span>
-          </button>
+        @for (r of store.filtered(); track r.id) {
+          <div class="table-row" role="row">
+            <span class="mono" role="cell" style="font-size:12px;color:#9ca3af">#{{ r.id }}</span>
+            <span role="cell">
+              <span class="space-chip" [attr.aria-label]="'Space ' + r.spaceLabel">{{ r.spaceLabel }}</span>
+            </span>
+            <span role="cell" style="font-size:12px">{{ r.parkingLotName }}</span>
+            <span role="cell" style="font-size:12px;color:#444652">{{ r.driverEmail }}</span>
+            <span role="cell" style="font-size:12px;color:#757684">{{ formatDate(r.createdAt) }}</span>
+            <span role="cell" style="font-size:12px;color:#757684">
+              {{ formatDate(r.consumedAt || r.cancelledAt) }}
+            </span>
+            <span role="cell">
+              <span class="status-pill"
+                [class.consumed]="r.status === 'finished'"
+                [class.cancelled]="r.status === 'cancelled'"
+                [class.expired]="r.rawStatus === 'EXPIRED'"
+                [attr.aria-label]="'Status: ' + statusLabel(r.status)">
+                <i aria-hidden="true"></i> {{ statusLabel(r.status) }}
+              </span>
+            </span>
+            <span role="cell" class="right"></span>
+          </div>
         }
-      </div>
-      <div class="toast">
-        <span class="material-symbols-outlined">info</span>
-        Reservation details loaded successfully.
+
+        @empty {
+          <div class="empty-example" role="status">
+            <span><span class="material-symbols-outlined" aria-hidden="true">history</span></span>
+            <h3>No history yet</h3>
+            <p>Completed and cancelled reservations will appear here.</p>
+          </div>
+        }
       </div>
     }
   </div>
-
-  @if (showDetails()) {
-    @let activeR = detailActive();
-    @let histR = detailHistory();
-    @let commonR = activeR ?? histR;
-    @if (commonR) {
-      <div class="modal-backdrop" (click)="closeDetails()"></div>
-      <aside class="details-modal" role="dialog" aria-label="Reservation Details">
-        <header class="modal-head">
-          <div class="modal-head-left">
-            <span class="modal-type-icon">
-              <span class="material-symbols-outlined">event_available</span>
-            </span>
-            <div>
-              <h3>Reservation Details</h3>
-              <span class="modal-eyebrow">{{ activeR ? 'Active reservation' : 'Historical record' }}</span>
-            </div>
-          </div>
-          <button class="modal-close-btn" (click)="closeDetails()" aria-label="Close">
-            <span class="material-symbols-outlined">close</span>
-          </button>
-        </header>
-
-        <div class="modal-body">
-          <div class="modal-id-row">
-            <div>
-              <span class="modal-label">Reservation ID</span>
-              <strong class="modal-id-val">{{ commonR.id }}</strong>
-            </div>
-            <span class="status-pill" [class]="commonR.status">
-              <i></i>{{ statusLabel(commonR.status) }}
-            </span>
-          </div>
-
-          <div class="modal-info-grid">
-            <div class="modal-info-cell">
-              <span class="modal-label">
-                <span class="material-symbols-outlined">local_parking</span> Space
-              </span>
-              <span class="modal-val">
-                <span class="space-chip">{{ commonR.space }}</span>
-              </span>
-            </div>
-            <div class="modal-info-cell">
-              <span class="modal-label">
-                <span class="material-symbols-outlined">person</span> Driver
-              </span>
-              <span class="modal-val">{{ commonR.driver }}</span>
-            </div>
-
-            @if (activeR) {
-              <div class="modal-info-cell">
-                <span class="modal-label">
-                  <span class="material-symbols-outlined">schedule</span> Start Time
-                </span>
-                <span class="modal-val">{{ activeR.start }}</span>
-              </div>
-              <div class="modal-info-cell">
-                <span class="modal-label">
-                  <span class="material-symbols-outlined">timer</span> Remaining
-                </span>
-                <span class="modal-val" [class.warn-text]="activeR.status === 'expiring'">
-                  {{ activeR.remaining }}
-                </span>
-              </div>
-              <div class="modal-info-cell modal-info-cell--wide">
-                <span class="modal-label">
-                  <span class="material-symbols-outlined">confirmation_number</span> Ticket Code
-                </span>
-                <span class="modal-val mono">{{ activeR.ticket }}</span>
-              </div>
-            } @else if (histR) {
-              <div class="modal-info-cell">
-                <span class="modal-label">
-                  <span class="material-symbols-outlined">calendar_today</span> Date
-                </span>
-                <span class="modal-val">{{ histR.date }}</span>
-              </div>
-              <div class="modal-info-cell">
-                <span class="modal-label">
-                  <span class="material-symbols-outlined">schedule</span> Time Window
-                </span>
-                <span class="modal-val">{{ histR.window }}</span>
-              </div>
-              <div class="modal-info-cell modal-info-cell--wide">
-                <span class="modal-label">
-                  <span class="material-symbols-outlined">info</span> Closure Reason
-                </span>
-                <span class="modal-val">{{ histR.reason }}</span>
-              </div>
-            }
-          </div>
-        </div>
-
-        <footer class="modal-foot">
-          <button class="ghost-btn" (click)="closeDetails()">
-            <span class="material-symbols-outlined">close</span> Close
-          </button>
-          @if (activeR) {
-            <button class="primary-btn" (click)="setView('active'); closeDetails()">
-              <span class="material-symbols-outlined">manage_accounts</span> Manage
-            </button>
-          }
-        </footer>
-      </aside>
-    }
-  }
 </section>

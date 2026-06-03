@@ -3,25 +3,18 @@ import {HttpClient} from '@angular/common/http';
 import {Observable} from 'rxjs';
 import {environment} from '../../../environments/environment';
 
-export interface CameraFeedDto {
-  id: number;
-  parkingLotId: number;
-  nodeId: string;
-  cameraUrl: string;
-  status: string;
-  lastSeenAt: string;
+export interface SnapshotDto {
+  url: string;
+  timestamp: number;
+  isRecent: boolean;
 }
 
 @Injectable({providedIn: 'root'})
 export class CameraApiService {
   private readonly http = inject(HttpClient);
-  private readonly base = `${environment.apiBaseUrl}/camera-feeds`;
+  private readonly base = `${environment.apiBaseUrl}/camera`;
 
-  getLatest(lotId: number): Observable<CameraFeedDto> {
-    return this.http.get<CameraFeedDto>(`${this.base}/${lotId}/latest`);
-  }
-
-  getAll(lotId: number): Observable<CameraFeedDto[]> {
-    return this.http.get<CameraFeedDto[]>(`${this.base}/${lotId}`);
+  getSnapshot(lotId: number): Observable<SnapshotDto> {
+    return this.http.get<SnapshotDto>(`${this.base}/snapshot/${lotId}`);
   }
 }

@@ -1,48 +1,27 @@
 <section class="camera-view">
   <app-page-header
-    eyebrow="ADMIN · CÁMARA"
-    title="Cámara en Vivo"
-    subtitle="Verificación visual del estacionamiento. El sensor HC-SR04 es la fuente oficial del estado.">
-    <div class="ctx-pills">
-      <span><span class="material-symbols-outlined">local_parking</span> ParkingNow San Isidro</span>
-      <span class="node-pill" [class.online]="nodeStatus() === 'ONLINE'" [class.offline]="nodeStatus() === 'OFFLINE'">
-        <i></i> Nodo ESP32-CAM-001 {{ nodeStatus() }}
-      </span>
-    </div>
-    <a routerLink="/monitoring" class="ghost-btn">
-      <span class="material-symbols-outlined">grid_view</span> Ver espacios
-    </a>
-    <button class="primary-btn" (click)="refresh()">
-      <span class="material-symbols-outlined">refresh</span> Recargar
+    eyebrow="OWNER · CAMERA"
+    title="Camera Monitor"
+    subtitle="Visual verification of the parking lot. The HC-SR04 sensor is the official source of space status.">
+    <button class="primary-btn" (click)="refresh()" aria-label="Refresh snapshot">
+      <span class="material-symbols-outlined">refresh</span> Refresh
     </button>
   </app-page-header>
 
   <!-- Status row -->
   <div class="status-row">
-    <article class="status-card" [class.offline-card]="status() === 'OFFLINE'">
-      <div class="stat-icon cam" [class.offline]="status() === 'OFFLINE'">
-        <span class="material-symbols-outlined">{{ status() === 'ONLINE' ? 'videocam' : 'videocam_off' }}</span>
-      </div>
-      <div class="stat-body">
-        <p>Cámara</p>
-        <strong>ESP32-CAM-001</strong>
-        <small>Verificación visual</small>
-      </div>
-      <span class="badge" [class.online]="status() === 'ONLINE'" [class.offline]="status() === 'OFFLINE'">
-        <i></i> {{ status() }}
-      </span>
-    </article>
-
     <article class="status-card">
-      <div class="stat-icon node">
-        <span class="material-symbols-outlined">memory</span>
+      <div class="stat-icon cam" [class.offline]="!isRecent()">
+        <span class="material-symbols-outlined">{{ isRecent() ? 'videocam' : 'videocam_off' }}</span>
       </div>
       <div class="stat-body">
-        <p>Nodo IoT</p>
-        <strong>ESP32-001</strong>
-        <small>HC-SR04 activo</small>
+        <p>Snapshot</p>
+        <strong>ESP32-CAM</strong>
+        <small>Periodic capture every 10s</small>
       </div>
-      <span class="badge online"><i></i> ONLINE</span>
+      <span class="badge" [class.online]="isRecent()" [class.offline]="!isRecent()" aria-label="Camera status">
+        <i></i> {{ isRecent() ? 'RECENT' : 'STALE' }}
+      </span>
     </article>
 
     <article class="status-card">
@@ -50,9 +29,9 @@
         <span class="material-symbols-outlined">schedule</span>
       </div>
       <div class="stat-body">
-        <p>Última actualización</p>
-        <strong>{{ updatedAt() }}</strong>
-        <small>Polling cada 5 s</small>
+        <p>Last captured</p>
+        <strong>{{ capturedAt() }}</strong>
+        <small>{{ secondsAgo() }}s ago · auto-refresh 5s</small>
       </div>
     </article>
 
@@ -61,71 +40,56 @@
         <span class="material-symbols-outlined">sensors</span>
       </div>
       <div class="stat-body">
-        <p>Fuente oficial</p>
-        <strong>Sensor HC-SR04</strong>
-        <small>Cámara = solo verificación visual</small>
+        <p>Official source</p>
+        <strong>HC-SR04 Sensor</strong>
+        <small>Camera = visual verification only</small>
       </div>
     </article>
   </div>
 
-  <!-- Camera feed -->
+  <!-- Camera snapshot -->
   <div class="camera-card">
     <div class="cam-header">
       <div class="cam-title">
-        <span class="material-symbols-outlined">videocam</span>
-        <h3>Stream en vivo</h3>
-        @if (status() === 'ONLINE') {
-          <span class="live-badge"><i></i> En vivo</span>
+        <span class="material-symbols-outlined" aria-hidden="true">videocam</span>
+        <h3>Latest Snapshot</h3>
+        @if (isRecent()) {
+          <span class="live-badge" aria-label="Recent snapshot"><i></i> Recent</span>
         }
       </div>
       <div class="cam-actions">
-        <button class="action-btn" (click)="refresh()">
-          <span class="material-symbols-outlined">refresh</span> Recargar feed
-        </button>
-        <button class="action-btn secondary">
-          <span class="material-symbols-outlined">open_in_full</span> Pantalla completa
-        </button>
-        <button class="action-btn debug" (click)="toggleStatus()">
-          <span class="material-symbols-outlined">swap_horiz</span> Demo toggle
+        <button class="action-btn" (click)="refresh()" aria-label="Reload snapshot">
+          <span class="material-symbols-outlined">refresh</span> Reload
         </button>
       </div>
     </div>
 
-    @if (status() === 'ONLINE') {
+    @if (snapshotUrl()) {
       <div class="cam-frame">
-        <div class="cam-overlay-gradient"></div>
-        <div class="cam-placeholder">
-          <span class="material-symbols-outlined pulse">videocam</span>
-          <p>Stream de cámara activo</p>
-          <code>{{ streamUrl }}</code>
-        </div>
+        <img class="cam-stream" [src]="snapshotUrl()" alt="Parking lot snapshot from ESP32-CAM" />
+      </div>
+      <div class="cam-meta">
+        <span class="material-symbols-outlined" aria-hidden="true">link</span>
+        <code class="url-code">{{ snapshotUrl() }}</code>
       </div>
     } @else {
-      <div class="cam-offline">
-        <span class="material-symbols-outlined">videocam_off</span>
-        <h3>Cámara sin señal</h3>
-        <p>No se pudo conectar con el stream.<br>Verifica que el nodo ESP32-CAM esté encendido y en la red local.</p>
-        <button class="primary-btn mt" (click)="refresh()">
-          <span class="material-symbols-outlined">refresh</span> Reintentar conexión
+      <div class="cam-offline" aria-live="polite">
+        <span class="material-symbols-outlined" aria-hidden="true">videocam_off</span>
+        <h3>No snapshot available</h3>
+        <p>The ESP32-CAM hasn't sent a snapshot yet.<br>Make sure the node is powered on and connected to the network.</p>
+        <button class="primary-btn mt" (click)="refresh()" aria-label="Retry connection">
+          <span class="material-symbols-outlined">refresh</span> Retry
         </button>
       </div>
     }
-
-    <div class="cam-meta">
-      <span class="material-symbols-outlined">link</span>
-      <code class="url-code">{{ streamUrl }}</code>
-      <span class="meta-sep">·</span>
-      <span class="meta-hint">iframe / img · actualización manual o polling</span>
-    </div>
   </div>
 
-  <!-- Info note -->
-  <div class="info-note">
-    <span class="material-symbols-outlined">info</span>
+  <div class="info-note" role="note">
+    <span class="material-symbols-outlined" aria-hidden="true">info</span>
     <p>
-      La cámara es solo una herramienta de verificación visual. El estado oficial de cada espacio
-      (AVAILABLE / OCCUPIED / RESERVED / OFFLINE) lo determina exclusivamente el sensor
-      <strong>HC-SR04</strong> conectado al nodo <strong>ESP32-001</strong>.
+      The camera is a visual verification tool only. The official status of each space
+      (FREE / OCCUPIED / RESERVED) is determined exclusively by the
+      <strong>HC-SR04</strong> sensor connected to the IoT node.
     </p>
   </div>
 </section>

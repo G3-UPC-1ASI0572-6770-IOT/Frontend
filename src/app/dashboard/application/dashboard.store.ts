@@ -1,11 +1,6 @@
 import {Injectable, computed, signal, inject} from '@angular/core';
 import {DashboardApiService, DashboardSummary} from '../infrastructure/dashboard.service';
 
-export interface OccupancyPoint {
-  hour: number;
-  value: number;
-}
-
 @Injectable({providedIn: 'root'})
 export class DashboardStore {
   private readonly api = inject(DashboardApiService);
@@ -13,71 +8,80 @@ export class DashboardStore {
   readonly loading = signal(false);
   readonly error = signal('');
   readonly summary = signal<DashboardSummary | null>(null);
-  readonly mode = signal<'balanced' | 'structured'>('balanced');
 
   readonly kpis = computed(() => {
     const s = this.summary();
-    if (!s) return [];
+    if (!s) return [] as KpiCard[];
     return [
-      {id: 'total',        icon: 'grid_view',              label: 'Total Spaces',        value: String(s.totalSpaces),         tone: 'default' as const,  delta: '', hint: 'All spaces',        trend: 'flat' as const},
-      {id: 'occupancy',    icon: 'percent',                label: 'Occupancy',           value: `${s.occupancyPercent}%`,      tone: 'accent' as const,   delta: '', hint: 'Right now',         trend: 'flat' as const},
-      {id: 'reservations', icon: 'event_available',        label: 'Active Reservations', value: String(s.activeReservations),  tone: 'success' as const,  delta: '', hint: 'In progress',       trend: 'up' as const},
-      {id: 'alerts',       icon: 'notification_important', label: 'Alerts Today',        value: String(s.alertsToday),         tone: 'warning' as const,  delta: '', hint: 'Last 24 h',         trend: 'flat' as const},
-      {id: 'revenue',      icon: 'payments',               label: 'Revenue Today',       value: `S/${(s.estimatedRevenueToday ?? 0).toFixed(2)}`, tone: 'default' as const, delta: '', hint: 'Estimated', trend: 'up' as const},
+      {id: 'total',        icon: 'grid_view',      label: 'Total Spaces',        value: String(s.totalSpaces),                     tone: 'default'  as Tone, trend: 'flat' as Trend},
+      {id: 'free',         icon: 'check_circle',   label: 'Free',                value: String(s.freeSpaces),                      tone: 'success'  as Tone, trend: 'flat' as Trend},
+      {id: 'occupied',     icon: 'directions_car', label: 'Occupied',            value: String(s.occupiedSpaces),                  tone: 'danger'   as Tone, trend: 'up'   as Trend},
+      {id: 'reserved',     icon: 'schedule',       label: 'Reserved',            value: String(s.reservedSpaces),                  tone: 'warning'  as Tone, trend: 'flat' as Trend},
+      {id: 'occupancy',    icon: 'percent',        label: 'Occupancy Rate',      value: `${(s.occupancyRate ?? 0).toFixed(1)}%`,   tone: 'accent'   as Tone, trend: 'up'   as Trend},
+      {id: 'revenue',      icon: 'payments',       label: 'Revenue Today',       value: `S/. ${(s.todayRevenue ?? 0).toFixed(2)}`, tone: 'default'  as Tone, trend: 'up'   as Trend},
+      {id: 'reservations', icon: 'book_online',    label: 'Active Reservations', value: String(s.activeReservations),              tone: 'success'  as Tone, trend: 'flat' as Trend},
+      {id: 'node',         icon: 'memory',         label: 'Node Status',         value: s.nodeStatus ?? 'UNKNOWN',                 tone: s.nodeStatus === 'ONLINE' ? 'success' as Tone : 'danger' as Tone, trend: 'flat' as Trend},
     ];
   });
 
-  readonly occupancyTrend = computed((): OccupancyPoint[] => {
+  readonly chartDonutData = computed(() => {
     const s = this.summary();
-    if (!s) return defaultTrend();
-    return defaultTrend();
+    if (!s) return null;
+    return {
+      labels: ['Occupied', 'Reserved', 'Free'],
+      datasets: [{
+        data: [s.occupiedSpaces, s.reservedSpaces, s.freeSpaces],
+        backgroundColor: ['#dc2626', '#f59e0b', '#16a34a'],
+        borderWidth: 0,
+        hoverOffset: 6,
+      }]
+    };
   });
 
-  readonly recentEvents = computed(() => {
+  readonly chartBarData = computed(() => {
     const s = this.summary();
-    if (!s) return [];
-    return (s.recentEvents as any[]).map((e: any) => ({
-      id: String(e.id),
-      icon: severityIcon(e.severity),
-      title: e.title,
-      detail: e.message ?? '',
-      time: formatAgo(e.createdAt),
-      variant: e.severity?.toLowerCase() ?? 'info'
+    if (!s || !s.last7DaysRevenue?.length) return null;
+    return {
+      labels: s.last7DaysRevenue.map((d: any) => d.date.slice(5)),
+      datasets: [{
+        label: 'Revenue S/.',
+        data: s.last7DaysRevenue.map((d: any) => Number(d.amount)),
+        backgroundColor: '#00268a',
+        borderRadius: 6,
+        borderSkipped: false,
+      }]
+    };
+  });
+
+  readonly recentIotEvents = computed(() => {
+    const s = this.summary();
+    if (!s?.recentIotEvents) return [];
+    return s.recentIotEvents.map((e: any) => ({
+      ts: formatAgo(e.ts),
+      spaceLabel: e.spaceLabel,
+      status: e.status,
+      icon: e.status === 'OCCUPIED' ? 'directions_car' : 'check_circle',
+      variant: e.status === 'OCCUPIED' ? 'danger' : 'success',
     }));
   });
 
-  readonly topLots = computed(() => (this.summary()?.topLots ?? []) as any[]);
-
-  load(ownerId?: number): void {
+  load(): void {
     this.loading.set(true);
-    this.api.getSummary(ownerId).subscribe({
+    this.api.getSummary().subscribe({
       next: s => { this.summary.set(s); this.loading.set(false); },
-      error: () => { this.error.set('No se pudo cargar el dashboard.'); this.loading.set(false); }
+      error: () => { this.error.set('Could not load dashboard.'); this.loading.set(false); }
     });
   }
-
-  setMode(mode: 'balanced' | 'structured'): void { this.mode.set(mode); }
 }
 
-function defaultTrend(): OccupancyPoint[] {
-  return [6, 8, 9, 11, 13, 15, 14, 12, 11, 10, 9, 8].map((v, i) => ({hour: 8 + i, value: v * 5}));
-}
-
-function severityIcon(s: string): string {
-  switch (s?.toUpperCase()) {
-    case 'CRITICAL': return 'crisis_alert';
-    case 'WARNING':  return 'warning';
-    case 'RESOLVED': return 'check_circle';
-    default:         return 'info';
-  }
-}
+type Tone = 'default' | 'accent' | 'success' | 'warning' | 'danger';
+type Trend = 'up' | 'down' | 'flat';
+interface KpiCard { id: string; icon: string; label: string; value: string; tone: Tone; trend: Trend; }
 
 function formatAgo(iso: string): string {
   if (!iso) return '';
-  const m = Math.floor((Date.now() - new Date(iso).getTime()) / 60_000);
-  if (m < 1)  return 'just now';
-  if (m < 60) return `${m} min ago`;
-  const h = Math.floor(m / 60);
-  if (h < 24) return `${h} h ago`;
-  return `${Math.floor(h / 24)} d ago`;
+  const diff = Math.floor((Date.now() - new Date(iso).getTime()) / 1000);
+  if (diff < 60) return `${diff}s ago`;
+  if (diff < 3600) return `${Math.floor(diff / 60)}m ago`;
+  return `${Math.floor(diff / 3600)}h ago`;
 }

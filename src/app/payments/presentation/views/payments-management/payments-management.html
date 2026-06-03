@@ -1,117 +1,156 @@
 <section class="payments-view">
   <app-page-header
-    eyebrow="ADMIN · PAGOS"
-    title="Pagos Demo"
-    subtitle="Registro de pagos confirmados, pendientes y fallidos por reserva.">
-    <div class="ctx-pills">
-      <span><span class="material-symbols-outlined">local_parking</span> ParkingNow San Isidro</span>
-      <span><span class="material-symbols-outlined">schedule</span> Actualizado: hace 2 min</span>
-      <span class="live"><i></i> Sincronizando</span>
-    </div>
-    <a routerLink="/reservations" class="ghost-btn">
-      <span class="material-symbols-outlined">event_available</span> Ver reservas
-    </a>
-    <button class="primary-btn">
-      <span class="material-symbols-outlined">download</span> Exportar
-    </button>
+    eyebrow="OWNER · FINANCE"
+    title="Payments"
+    subtitle="All income from reservations at your parking lot.">
   </app-page-header>
 
-  <div class="kpi-row">
-    <article class="kpi-card">
-      <div class="kpi-icon total"><span class="material-symbols-outlined">receipt_long</span></div>
+  @if (loading()) {
+    <div class="feedback" role="status" aria-live="polite">
+      <span class="material-symbols-outlined">sync</span> Loading payments…
+    </div>
+  }
+
+  <!-- KPI row -->
+  <div class="kpi-row" role="list" aria-label="Payment metrics">
+    <div class="kpi-card" role="listitem">
+      <div class="kpi-icon total"><span class="material-symbols-outlined" aria-hidden="true">account_balance_wallet</span></div>
       <div class="kpi-body">
-        <p>Total pagos</p>
-        <strong>24</strong>
-        <small>registros hoy</small>
+        <p>Total Collected</p>
+        <strong>{{ total }}</strong>
+        <small>All time revenue</small>
       </div>
-    </article>
-    <article class="kpi-card">
-      <div class="kpi-icon paid"><span class="material-symbols-outlined">check_circle</span></div>
+    </div>
+    <div class="kpi-card" role="listitem">
+      <div class="kpi-icon paid"><span class="material-symbols-outlined" aria-hidden="true">verified</span></div>
       <div class="kpi-body">
-        <p>Confirmados</p>
-        <strong>S/ 1,248</strong>
-        <small>20 pagos PAID</small>
+        <p>Confirmed Paid</p>
+        <strong>{{ paidCount }}</strong>
+        <small>Successful payments</small>
       </div>
-    </article>
-    <article class="kpi-card">
-      <div class="kpi-icon pending"><span class="material-symbols-outlined">hourglass_top</span></div>
+    </div>
+    <div class="kpi-card" role="listitem">
+      <div class="kpi-icon pending"><span class="material-symbols-outlined" aria-hidden="true">hourglass_top</span></div>
       <div class="kpi-body">
-        <p>Pendientes</p>
-        <strong>4</strong>
-        <small>aguardando confirmación</small>
+        <p>Pending</p>
+        <strong>{{ pendingCount }}</strong>
+        <small>Awaiting confirmation</small>
       </div>
-    </article>
-    <article class="kpi-card">
-      <div class="kpi-icon failed"><span class="material-symbols-outlined">cancel</span></div>
+    </div>
+    <div class="kpi-card" role="listitem">
+      <div class="kpi-icon total"><span class="material-symbols-outlined" aria-hidden="true">receipt_long</span></div>
       <div class="kpi-body">
-        <p>Fallidos</p>
-        <strong>0</strong>
-        <small>sin errores hoy</small>
+        <p>Transactions</p>
+        <strong>{{ payments().length }}</strong>
+        <small>Total records</small>
       </div>
-    </article>
+    </div>
   </div>
 
-  <div class="table-card">
+  <!-- Payment History Card -->
+  <div class="table-card" role="region" aria-label="Payment history">
+
+    <!-- Toolbar -->
     <div class="table-toolbar">
-      <label class="search-wrap">
-        <span class="material-symbols-outlined">search</span>
-        <input type="text" placeholder="Buscar por reserva o método…" />
-      </label>
-      <div class="filter-pills">
-        <span>Estado</span>
-        <button class="pill-btn active">Todos</button>
-        <button class="pill-btn">PAID</button>
-        <button class="pill-btn">PENDING</button>
-        <button class="pill-btn">FAILED</button>
+      <div class="toolbar-left">
+        <div class="toolbar-icon" aria-hidden="true">
+          <span class="material-symbols-outlined">receipt_long</span>
+        </div>
+        <div class="toolbar-title-group">
+          <span class="toolbar-title">Payment History</span>
+          <span class="toolbar-count-badge" aria-label="{{ payments().length }} records">
+            {{ payments().length }} records
+          </span>
+        </div>
       </div>
-      <div class="filter-pills">
-        <span>Método</span>
-        <button class="pill-btn active">Todos</button>
-        <button class="pill-btn">DEMO_CARD</button>
-        <button class="pill-btn">YAPE</button>
-        <button class="pill-btn">CASH</button>
+      <div class="toolbar-right">
+        <div class="toolbar-revenue-pill" aria-label="Total revenue: {{ total }}">
+          <span class="revenue-label">Total Revenue</span>
+          <span class="revenue-value">{{ total }}</span>
+        </div>
       </div>
-      <button class="date-btn">
-        <span class="material-symbols-outlined">calendar_today</span> Hoy
-      </button>
     </div>
 
-    <div class="pay-table">
-      <div class="table-head">
-        <span>Reserva</span>
-        <span>Monto</span>
-        <span>Método</span>
-        <span>Estado</span>
-        <span>Fecha / Hora</span>
-        <span class="t-right">Acción</span>
+    <!-- Table -->
+    <div class="pay-table" role="table" aria-label="Payments list">
+      <div class="table-head" role="row">
+        <span role="columnheader">Reservation</span>
+        <span role="columnheader">Amount</span>
+        <span role="columnheader">Method</span>
+        <span role="columnheader">Status</span>
+        <span role="columnheader">Date</span>
+        <span role="columnheader" class="t-right">ID</span>
       </div>
-      @for (row of rows; track row.reservation) {
-        <div class="table-row">
-          <strong class="ref">{{ row.reservation }}</strong>
-          <span class="amount">{{ row.amount }}</span>
-          <span class="method-chip">{{ row.method }}</span>
-          <span class="status-dot" [class]="row.status.toLowerCase()">
-            <i></i>{{ row.status }}
+
+      @for (p of payments(); track p.id) {
+        <div class="table-row" role="row">
+
+          <!-- Reservation ref -->
+          <span class="ref" role="cell">
+            <span class="res-icon" aria-hidden="true">
+              <span class="material-symbols-outlined">confirmation_number</span>
+            </span>
+            RSV-{{ p.reservationId }}
           </span>
-          <span class="date-col">{{ row.date }}</span>
-          <span class="t-right">
-            <button class="icon-btn" title="Ver detalle">
-              <span class="material-symbols-outlined">open_in_new</span>
-            </button>
+
+          <!-- Amount -->
+          <span role="cell">
+            <span class="amount">S/. {{ (p.amount ?? 0).toFixed(2) }}</span>
           </span>
+
+          <!-- Method -->
+          <span role="cell">
+            <span class="method-chip" [attr.aria-label]="'Payment method: ' + (p.method ?? 'DEMO_CARD')">
+              {{ (p.method ?? 'DEMO_CARD').replace('_', ' ') }}
+            </span>
+          </span>
+
+          <!-- Status -->
+          <span role="cell">
+            <span class="status-dot"
+              [class.paid]="p.status === 'PAID'"
+              [class.pending]="p.status === 'PENDING'"
+              [class.failed]="p.status === 'FAILED'"
+              [class.refunded]="p.status === 'REFUNDED'"
+              [attr.aria-label]="'Status: ' + p.status">
+              <i aria-hidden="true"></i>
+              {{ p.status }}
+            </span>
+          </span>
+
+          <!-- Date -->
+          <span class="date-col" role="cell">{{ formatDate(p.paidAt) }}</span>
+
+          <!-- ID -->
+          <span class="t-right" role="cell">
+            <span class="id-badge" aria-label="Payment ID {{ p.id }}">#{{ p.id }}</span>
+          </span>
+
+        </div>
+      }
+
+      @empty {
+        <div class="empty-state" role="status" aria-live="polite">
+          <div class="empty-icon" aria-hidden="true">
+            <span class="material-symbols-outlined">payments</span>
+          </div>
+          <p class="empty-title">No payments yet</p>
+          <p class="empty-sub">Payments appear here once drivers complete reservations.</p>
         </div>
       }
     </div>
 
-    <footer class="table-footer">
-      <span>Mostrando 1–{{ rows.length }} de 24 registros</span>
-      <div class="pagination">
-        <button disabled>‹</button>
-        <button class="pg-current">1</button>
-        <button>2</button>
-        <button>3</button>
-        <button>›</button>
+    <!-- Footer -->
+    <div class="table-footer" aria-label="Table summary">
+      <div class="footer-left">
+        <span class="material-symbols-outlined" aria-hidden="true">info</span>
+        <span>Showing <strong>{{ payments().length }}</strong> payment{{ payments().length !== 1 ? 's' : '' }}</span>
       </div>
-    </footer>
+      <div class="footer-right">
+        <span class="footer-total-label">Total collected:</span>
+        <span class="footer-total-value">{{ total }}</span>
+      </div>
+    </div>
+
   </div>
 </section>

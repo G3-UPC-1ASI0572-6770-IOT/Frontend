@@ -3,12 +3,13 @@ import {EventAlert} from '../../shared/domain/model/event-alert';
 import {EventsApiService, EventDto} from '../infrastructure/events.service';
 
 function toModel(d: EventDto): EventAlert {
+  const synced = d.syncStatus === 'SYNCED';
   return {
     id: String(d.id),
-    severity: (d.severity?.toLowerCase() ?? 'info') as EventAlert['severity'],
-    title: d.title,
-    message: d.message ?? '',
-    time: formatAgo(d.createdAt)
+    severity: synced ? 'info' : 'warning',
+    title: `${d.detectedStatus} · ${d.spaceCode}`,
+    message: `Node ${d.nodeId} reported ${d.distanceCm ?? '-'} cm. ${d.result ?? ''}`,
+    time: formatAgo(d.receivedAt)
   };
 }
 

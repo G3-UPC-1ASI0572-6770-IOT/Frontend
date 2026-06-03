@@ -1,155 +1,122 @@
 <section class="dashboard-view">
   <app-page-header
     eyebrow="OWNER OVERVIEW"
-    title="Dashboard Overview"
-    subtitle="Monitor your parking lot operation in real time.">
-    <a routerLink="/events" class="export-btn">
-      <span class="material-symbols-outlined">notifications</span> Ver alertas
+    title="Dashboard"
+    subtitle="Real-time monitoring of your parking lot operation.">
+    <a routerLink="/camera" class="export-btn" aria-label="View camera">
+      <span class="material-symbols-outlined">videocam</span> Camera
     </a>
-    <a routerLink="/camera" class="export-btn">
-      <span class="material-symbols-outlined">videocam</span> Ver cámara
+    <a routerLink="/events" class="export-btn" aria-label="View IoT events">
+      <span class="material-symbols-outlined">sensors</span> IoT Events
     </a>
   </app-page-header>
 
-  <div class="kpi-grid">
+  @if (store.loading()) {
+    <div class="loading-bar" aria-live="polite" aria-label="Loading dashboard"></div>
+  }
+  @if (store.error()) {
+    <div class="error-banner" role="alert">{{ store.error() }}</div>
+  }
+
+  <div class="kpi-grid" role="list" aria-label="Key metrics">
     @for (k of store.kpis(); track k.id) {
       <app-metric-card
         [icon]="k.icon"
         [label]="k.label"
         [value]="k.value"
-        [delta]="k.delta"
-        [hint]="k.hint"
+        [tone]="k.tone"
         [trend]="k.trend"
-        [tone]="k.tone">
+        delta=""
+        hint=""
+        role="listitem">
       </app-metric-card>
     }
   </div>
 
   <div class="content-grid">
-    <section class="chart-card">
+
+    <section class="chart-card" aria-labelledby="donut-title">
       <header class="card-head">
         <div>
-          <h3>Occupancy Trend</h3>
-          <p>Hourly average across all parking lots — last 24h.</p>
-        </div>
-        <div class="legend">
-          <span class="dot dot-accent"></span> Occupancy %
+          <h3 id="donut-title">Occupancy Rate</h3>
+          <p>Current space usage — <strong>{{ store.summary()?.occupancyRate?.toFixed(1) ?? 0 }}%</strong> occupied</p>
         </div>
       </header>
-      <div class="chart-wrap">
-        <svg viewBox="0 0 600 200" preserveAspectRatio="none">
-          <defs>
-            <linearGradient id="grad" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="0%" stop-color="#00ACE8" stop-opacity="0.35" />
-              <stop offset="100%" stop-color="#00ACE8" stop-opacity="0" />
-            </linearGradient>
-          </defs>
-          <g class="grid">
-            @for (g of [25, 50, 75]; track g) {
-              <line [attr.x1]="12" [attr.x2]="588" [attr.y1]="g * 1.6 + 12" [attr.y2]="g * 1.6 + 12" />
-            }
-          </g>
-          <path [attr.d]="trendArea()" fill="url(#grad)" />
-          <path [attr.d]="trendPath()" fill="none" stroke="#00ACE8" stroke-width="3" stroke-linecap="round" />
-          @for (p of store.occupancyTrend(); track p.hour; let i = $index) {
-            <circle
-              [attr.cx]="12 + i * ((600 - 24) / (store.occupancyTrend().length - 1))"
-              [attr.cy]="160 - 12 - (p.value / 100) * (160 - 24)"
-              r="3" fill="#fff" stroke="#00ACE8" stroke-width="2" />
-          }
-        </svg>
-        <div class="x-axis">
-          @for (p of store.occupancyTrend(); track p.hour) {
-            <span>{{ p.hour }}h</span>
-          }
-        </div>
+      <div class="donut-wrap">
+        <canvas #donutCanvas aria-label="Occupancy donut chart" role="img"></canvas>
       </div>
     </section>
 
-    <section class="events-card">
+    <section class="chart-card chart-bar" aria-labelledby="bar-title">
       <header class="card-head">
         <div>
-          <h3>Recent Events</h3>
-          <p>Latest signals from your IoT network.</p>
+          <h3 id="bar-title">Revenue — Last 7 Days</h3>
+          <p>Daily income in S/. from paid reservations</p>
         </div>
-        <a routerLink="/events" class="text-link">View all <span class="material-symbols-outlined">chevron_right</span></a>
       </header>
-      <ul class="event-list">
-        @for (e of store.recentEvents(); track e.id) {
+      <div class="bar-wrap">
+        <canvas #barCanvas aria-label="Revenue bar chart" role="img"></canvas>
+      </div>
+    </section>
+
+    <section class="events-card" aria-labelledby="events-title">
+      <header class="card-head">
+        <div>
+          <h3 id="events-title">Recent IoT Events</h3>
+          <p>Latest signals from your sensor network.</p>
+        </div>
+        <a routerLink="/events" class="text-link" aria-label="View all IoT events">
+          View all <span class="material-symbols-outlined" aria-hidden="true">chevron_right</span>
+        </a>
+      </header>
+      <ul class="event-list" aria-label="IoT event log">
+        @for (e of store.recentIotEvents(); track e.ts) {
           <li class="event-row">
-            <span class="event-icon" [class]="'v-' + e.variant">
+            <span class="event-icon" [class]="'v-' + e.variant" aria-hidden="true">
               <span class="material-symbols-outlined">{{ e.icon }}</span>
             </span>
             <div class="event-body">
-              <p class="event-title">{{ e.title }}</p>
-              <p class="event-detail">{{ e.detail }}</p>
+              <p class="event-title">Space <strong>{{ e.spaceLabel }}</strong></p>
+              <p class="event-detail">{{ e.status }}</p>
             </div>
-            <span class="event-time">{{ e.time }}</span>
+            <span class="event-time">{{ e.ts }}</span>
           </li>
+        }
+        @empty {
+          <li class="event-empty">No recent events</li>
         }
       </ul>
     </section>
 
-    <section class="lots-card">
+    <section class="health-card" aria-labelledby="health-title">
       <header class="card-head">
         <div>
-          <h3>Top Parking Lots</h3>
-          <p>Highest occupancy lots today.</p>
+          <h3 id="health-title">IoT Node Status</h3>
+          <p>Physical sensor network health</p>
         </div>
-        <a routerLink="/parking-lot" class="text-link">Manage lots <span class="material-symbols-outlined">chevron_right</span></a>
       </header>
-      <div class="lot-table">
-        <div class="lot-row lot-head">
-          <span>Lot</span><span>Occupancy</span><span>Revenue</span><span>Status</span>
+      <div class="node-status-block">
+        <div class="node-badge"
+          [class.online]="store.summary()?.nodeStatus === 'ONLINE'"
+          [class.offline]="store.summary()?.nodeStatus !== 'ONLINE'"
+          aria-label="Node status">
+          <span class="material-symbols-outlined node-icon" aria-hidden="true">
+            {{ store.summary()?.nodeStatus === 'ONLINE' ? 'wifi' : 'wifi_off' }}
+          </span>
+          <span class="node-label">{{ store.summary()?.nodeStatus ?? '—' }}</span>
         </div>
-        @for (l of store.topLots(); track l.id) {
-          <div class="lot-row">
-            <div class="lot-name">
-              <div class="lot-avatar"><span class="material-symbols-outlined">local_parking</span></div>
-              <div>
-                <p class="lot-title">{{ l.name }}</p>
-                <p class="lot-id">{{ l.id }}</p>
-              </div>
-            </div>
-            <div class="lot-bar">
-              <div class="bar-track">
-                <div class="bar-fill" [style.width.%]="l.occupancy"></div>
-              </div>
-              <span class="bar-pct">{{ l.occupancy }}%</span>
-            </div>
-            <div class="lot-revenue">{{ l.revenue }}</div>
-            <div><app-status-chip [variant]="l.status"></app-status-chip></div>
+        <div class="node-stats">
+          <div class="stat">
+            <span class="stat-val">{{ store.summary()?.activeReservations ?? 0 }}</span>
+            <span class="stat-lbl">Active Reservations</span>
           </div>
-        }
+          <div class="stat">
+            <span class="stat-val">S/. {{ (store.summary()?.todayRevenue ?? 0).toFixed(2) }}</span>
+            <span class="stat-lbl">Revenue Today</span>
+          </div>
+        </div>
       </div>
     </section>
 
-    <section class="health-card">
-      <header class="card-head">
-        <div>
-          <h3>System Health</h3>
-          <p>IoT network reliability snapshot.</p>
-        </div>
-      </header>
-      <div class="health-grid">
-        <div class="health-tile">
-          <span class="health-label">Nodes online</span>
-          <span class="health-val">97<span class="unit">%</span></span>
-          <div class="bar-track"><div class="bar-fill green" style="width: 97%"></div></div>
-        </div>
-        <div class="health-tile">
-          <span class="health-label">Avg signal</span>
-          <span class="health-val">82<span class="unit">dB</span></span>
-          <div class="bar-track"><div class="bar-fill accent" style="width: 82%"></div></div>
-        </div>
-        <div class="health-tile">
-          <span class="health-label">Avg battery</span>
-          <span class="health-val">76<span class="unit">%</span></span>
-          <div class="bar-track"><div class="bar-fill warn" style="width: 76%"></div></div>
-        </div>
-      </div>
-    </section>
   </div>
-
-  
 </section>

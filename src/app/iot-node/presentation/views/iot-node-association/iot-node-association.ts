@@ -18,7 +18,7 @@ export class IotNodeAssociation implements OnInit {
   protected readonly loading = signal(false);
   protected readonly nodes = signal<IotNodeDto[]>([]);
   protected readonly query = signal('');
-  protected readonly filter = signal<'all' | 'online' | 'warning' | 'offline'>('all');
+  protected readonly filter = signal<'all' | 'online' | 'offline'>('all');
   protected readonly drawerOpen = signal(false);
   protected readonly newNode = signal({id: '', type: 'Ultrasonic', lot: '', space: ''});
 
@@ -36,7 +36,6 @@ export class IotNodeAssociation implements OnInit {
     return {
       total: list.length,
       online: list.filter(n => n.status === 'online').length,
-      warning: list.filter(n => n.status === 'warning').length,
       offline: list.filter(n => n.status === 'offline').length
     };
   });
@@ -81,7 +80,6 @@ export class IotNodeAssociation implements OnInit {
 
   protected statusClass(status: string): string {
     if (status === 'online') return 'ok';
-    if (status === 'warning') return 'warn';
     return 'low';
   }
 

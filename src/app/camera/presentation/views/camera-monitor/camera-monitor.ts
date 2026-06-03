@@ -1,8 +1,8 @@
-import {ChangeDetectionStrategy, Component, OnInit, inject, signal, computed} from '@angular/core';
+import {ChangeDetectionStrategy, Component, OnDestroy, OnInit, inject, signal, computed} from '@angular/core';
 import {CommonModule} from '@angular/common';
 import {RouterLink} from '@angular/router';
 import {PageHeader} from '../../../../shared/presentation/components/page-header/page-header';
-import {CameraApiService, CameraFeedDto} from '../../../infrastructure/camera.service';
+import {CameraApiService, SnapshotDto} from '../../../infrastructure/camera.service';
 import {IamStore} from '../../../../iam/application/iam.store';
 
 @Component({
@@ -12,40 +12,43 @@ import {IamStore} from '../../../../iam/application/iam.store';
   templateUrl: './camera-monitor.html',
   styleUrl: './camera-monitor.css'
 })
-export class CameraMonitor implements OnInit {
+export class CameraMonitor implements OnInit, OnDestroy {
   private readonly api = inject(CameraApiService);
   private readonly iamStore = inject(IamStore);
+  private intervalId: ReturnType<typeof setInterval> | null = null;
 
   protected readonly loading = signal(false);
-  private readonly _feed = signal<CameraFeedDto | null>(null);
-  protected readonly status = computed(() => (this._feed()?.status?.toUpperCase() ?? 'OFFLINE') as 'ONLINE' | 'OFFLINE');
-  protected readonly nodeStatus = computed(() => this.status());
-  protected readonly streamUrl = computed(() => this._feed()?.cameraUrl ?? '');
-  protected readonly updatedAt = computed(() =>
-    this._feed()?.lastSeenAt ? new Date(this._feed()!.lastSeenAt).toLocaleString() : ''
-  );
+  protected readonly snapshot = signal<SnapshotDto | null>(null);
+
+  protected readonly isRecent   = computed(() => this.snapshot()?.isRecent ?? false);
+  protected readonly snapshotUrl = computed(() => this.snapshot()?.url ?? '');
+  protected readonly capturedAt  = computed(() => {
+    const ts = this.snapshot()?.timestamp;
+    return ts ? new Date(ts).toLocaleString() : '—';
+  });
+  protected readonly secondsAgo = computed(() => {
+    const ts = this.snapshot()?.timestamp;
+    if (!ts) return 0;
+    return Math.floor((Date.now() - ts) / 1000);
+  });
 
   ngOnInit(): void {
-    this.loadFeed();
+    this.load();
+    this.intervalId = setInterval(() => this.load(), 5000);
   }
 
-  protected refresh(): void {
-    this.loadFeed();
+  ngOnDestroy(): void {
+    if (this.intervalId) clearInterval(this.intervalId);
   }
 
-  protected toggleStatus(): void {
-    const feed = this._feed();
-    if (!feed) return;
-    const next = this.status() === 'ONLINE' ? 'OFFLINE' : 'ONLINE';
-    this.api.getAll(feed.parkingLotId).subscribe();
-  }
+  protected refresh(): void { this.load(); }
 
-  private loadFeed(): void {
+  private load(): void {
     const lotId = this.iamStore.parkingLotId;
     if (!lotId) return;
     this.loading.set(true);
-    this.api.getLatest(lotId).subscribe({
-      next: dto => { this._feed.set(dto); this.loading.set(false); },
+    this.api.getSnapshot(lotId).subscribe({
+      next: dto => { this.snapshot.set(dto); this.loading.set(false); },
       error: () => this.loading.set(false)
     });
   }

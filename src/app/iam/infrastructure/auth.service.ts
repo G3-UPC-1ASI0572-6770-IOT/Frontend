@@ -10,7 +10,6 @@ export interface AuthResponse {
   email: string;
   fullName: string;
   role: string;
-  parkingLotId: number;
 }
 
 @Injectable({providedIn: 'root'})
@@ -27,8 +26,8 @@ export class AuthService {
     );
   }
 
-  signUp(body: Record<string, unknown>): Observable<AuthResponse> {
-    return this.http.post<AuthResponse>(`${this.base}/sign-up`, body).pipe(
+  signUpOwner(name: string, email: string, password: string): Observable<AuthResponse> {
+    return this.http.post<AuthResponse>(`${this.base}/sign-up/owner`, {name, email, password}).pipe(
       tap(res => {
         localStorage.setItem('pn_token', res.token);
         localStorage.setItem('pn_user', JSON.stringify(res));
@@ -36,20 +35,8 @@ export class AuthService {
     );
   }
 
-  forgotPassword(email: string): Observable<unknown> {
-    return this.http.post(`${this.base}/forgot-password`, {email});
-  }
-
-  verifyCode(email: string, code: string): Observable<{valid: boolean}> {
-    return this.http.post<{valid: boolean}>(`${this.base}/verify-code`, {email, code});
-  }
-
-  resetPassword(email: string, code: string, newPassword: string): Observable<unknown> {
-    return this.http.post(`${this.base}/reset-password`, {email, code, newPassword});
-  }
-
-  me(): Observable<AuthResponse> {
-    return this.http.get<AuthResponse>(`${this.base}/me`);
+  changePassword(oldPassword: string, newPassword: string): Observable<{message: string}> {
+    return this.http.post<{message: string}>(`${this.base}/change-password`, {oldPassword, newPassword});
   }
 
   signOut(): void {

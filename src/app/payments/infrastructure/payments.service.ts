@@ -19,11 +19,7 @@ export class PaymentsApiService {
   private readonly http = inject(HttpClient);
   private readonly base = `${environment.apiBaseUrl}/payments`;
 
-  getAll(): Observable<PaymentDto[]> {
-    return this.http.get<PaymentDto[]>(this.base);
-  }
-
-  getByReservation(reservationId: number): Observable<PaymentDto> {
-    return this.http.get<PaymentDto>(`${this.base}/reservation/${reservationId}`);
+  getByLot(lotId: number): Observable<PaymentDto[]> {
+    return this.http.get<PaymentDto[]>(`${this.base}/parking-lot/${lotId}`);
   }
 }

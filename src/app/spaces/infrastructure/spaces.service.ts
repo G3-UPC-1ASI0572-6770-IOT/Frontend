@@ -5,24 +5,23 @@ import {environment} from '../../../environments/environment';
 
 export interface SpaceDto {
   id: number;
-  code: string;
-  zone: string;
-  type: string;
-  sensorCode: string;
-  status: string;
+  label: string;
+  status: string;   // FREE | RESERVED | OCCUPIED
+  source: string;   // SENSOR | MANUAL
   lotId: number;
+  lastUpdated?: string;
 }
 
 @Injectable({providedIn: 'root'})
 export class SpacesApiService {
   private readonly http = inject(HttpClient);
-  private readonly base = environment.apiBaseUrl;
+  private readonly base = `${environment.apiBaseUrl}/spaces`;
 
   getByLot(lotId: number): Observable<SpaceDto[]> {
-    return this.http.get<SpaceDto[]>(`${this.base}/parking-lots/${lotId}/spaces`);
+    return this.http.get<SpaceDto[]>(`${this.base}/parking-lot/${lotId}`);
   }
 
-  updateStatus(id: number, status: string): Observable<SpaceDto> {
-    return this.http.patch<SpaceDto>(`${this.base}/spaces/${id}/status`, {status});
+  updateStatus(id: number, status: string, source = 'MANUAL'): Observable<SpaceDto> {
+    return this.http.patch<SpaceDto>(`${this.base}/${id}/status`, {status, source});
   }
 }

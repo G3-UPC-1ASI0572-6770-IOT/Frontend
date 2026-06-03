@@ -5,19 +5,21 @@ import {environment} from '../../../environments/environment';
 
 export interface EventDto {
   id: number;
-  severity: string;
-  title: string;
-  message: string;
-  lotId: number;
-  spaceId: number;
-  nodeId: number;
-  createdAt: string;
+  nodeId: string;
+  parkingSpaceId: number;
+  spaceCode: string;
+  distanceCm: number;
+  detectedStatus: string;
+  receivedAt: string;
+  syncedAt?: string;
+  syncStatus: string;
+  result: string;
 }
 
 @Injectable({providedIn: 'root'})
 export class EventsApiService {
   private readonly http = inject(HttpClient);
-  private readonly base = `${environment.apiBaseUrl}/events`;
+  private readonly base = `${environment.apiBaseUrl}/iot/events`;
 
   getAll(limit = 100): Observable<EventDto[]> {
     return this.http.get<EventDto[]>(this.base, {params: {limit: String(limit)}});

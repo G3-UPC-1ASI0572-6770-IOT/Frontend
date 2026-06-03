@@ -1,7 +1,7 @@
 import {ChangeDetectionStrategy, Component, OnInit, effect, inject, signal} from '@angular/core';
 import {CommonModule} from '@angular/common';
 import {FormBuilder, ReactiveFormsModule, Validators} from '@angular/forms';
-import {MatDialog, MatDialogModule} from '@angular/material/dialog';
+import {MatDialog} from '@angular/material/dialog';
 import {ActivatedRoute, Router} from '@angular/router';
 import {ProfileStore} from '../../../application/profile.store';
 import {LogoutConfirmDialog} from '../../components/logout-confirm-dialog/logout-confirm-dialog';
@@ -9,7 +9,7 @@ import {PageHeader} from '../../../../shared/presentation/components/page-header
 
 @Component({
   selector: 'app-profile-settings',
-  imports: [CommonModule, ReactiveFormsModule, MatDialogModule, PageHeader],
+  imports: [CommonModule, ReactiveFormsModule, PageHeader],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './profile-settings.html',
   styleUrl: './profile-settings.css'

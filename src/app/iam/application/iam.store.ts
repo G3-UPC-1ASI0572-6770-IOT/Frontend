@@ -19,7 +19,8 @@ export class IamStore {
     this.currentUser.set(null);
   }
 
+  // OWNER panel: parkingLotId is resolved at runtime via API after login
   get parkingLotId(): number | null {
-    return this.currentUser()?.parkingLotId ?? null;
+    return (this.currentUser() as any)?.parkingLotId ?? null;
   }
 }

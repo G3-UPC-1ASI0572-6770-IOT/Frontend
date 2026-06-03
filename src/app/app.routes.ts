@@ -1,5 +1,6 @@
 import {Routes} from '@angular/router';
 import {OwnerLayout} from './shared/presentation/components/owner-layout/owner-layout';
+import {authGuard} from './shared/infrastructure/auth.guard';
 
 const iamRoutes = () => import('./iam/presentation/iam.routes').then(m => m.iamRoutes);
 const dashboardRoutes = () => import('./dashboard/presentation/dashboard.routes').then(m => m.dashboardRoutes);
@@ -20,6 +21,7 @@ export const routes: Routes = [
   {
     path: '',
     component: OwnerLayout,
+    canActivate: [authGuard],
     children: [
       {path: 'dashboard', loadChildren: dashboardRoutes},
       {path: 'parking-lot', loadChildren: parkingLotRoutes},

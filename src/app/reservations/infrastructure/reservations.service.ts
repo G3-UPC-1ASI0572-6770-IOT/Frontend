@@ -5,15 +5,17 @@ import {environment} from '../../../environments/environment';
 
 export interface ReservationDto {
   id: number;
-  code: string;
-  driverName: string;
-  driverPhone: string;
   spaceId: number;
+  spaceLabel: string;
   lotId: number;
-  startTime: string;
-  endTime: string;
+  parkingLotName: string;
+  driverId: number;
+  driverEmail: string;
   status: string;
   createdAt: string;
+  expiresAt: string;
+  consumedAt?: string;
+  cancelledAt?: string;
 }
 
 @Injectable({providedIn: 'root'})
@@ -21,12 +23,8 @@ export class ReservationsApiService {
   private readonly http = inject(HttpClient);
   private readonly base = `${environment.apiBaseUrl}/reservations`;
 
-  getAll(): Observable<ReservationDto[]> {
-    return this.http.get<ReservationDto[]>(this.base);
-  }
-
   getByLot(lotId: number): Observable<ReservationDto[]> {
-    return this.http.get<ReservationDto[]>(`${this.base}/lot/${lotId}`);
+    return this.http.get<ReservationDto[]>(`${this.base}/parking-lot/${lotId}`);
   }
 
   cancel(id: number): Observable<ReservationDto> {

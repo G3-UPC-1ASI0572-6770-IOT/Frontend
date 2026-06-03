@@ -1,4 +1,4 @@
-import {ChangeDetectionStrategy, Component, OnInit, computed, inject, signal} from '@angular/core';
+import {ChangeDetectionStrategy, Component, OnDestroy, OnInit, computed, inject, signal} from '@angular/core';
 import {CommonModule} from '@angular/common';
 import {FormsModule} from '@angular/forms';
 import {ActivatedRoute, RouterLink} from '@angular/router';
@@ -15,7 +15,7 @@ type DetailsPath = 'Path A' | 'Path B' | 'Direct';
   templateUrl: './events-history.html',
   styleUrl: './events-history.css'
 })
-export class EventsHistory implements OnInit {
+export class EventsHistory implements OnInit, OnDestroy {
   private readonly route = inject(ActivatedRoute);
   protected readonly eventsStore = inject(EventsStore);
 
@@ -24,6 +24,7 @@ export class EventsHistory implements OnInit {
   protected readonly detailsPath = signal<DetailsPath>('Direct');
 
   protected readonly query = this.eventsStore.query;
+  private intervalId: ReturnType<typeof setInterval> | null = null;
 
   protected get eventRows() {
     return this.eventsStore.filtered().map(e => ({
@@ -60,6 +61,11 @@ export class EventsHistory implements OnInit {
 
   ngOnInit(): void {
     this.eventsStore.load();
+    this.intervalId = setInterval(() => this.eventsStore.load(), 10000);
+  }
+
+  ngOnDestroy(): void {
+    if (this.intervalId) clearInterval(this.intervalId);
   }
 
   protected setView(view: EventsView): void {

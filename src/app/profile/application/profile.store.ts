@@ -1,5 +1,5 @@
-import {Injectable, signal, inject} from '@angular/core';
-import {ProfileApiService, ProfileDto} from '../infrastructure/profile.service';
+import {Injectable, signal, inject, effect} from '@angular/core';
+import {IamStore} from '../../iam/application/iam.store';
 
 export interface ProfilePreferences {
   emailAlerts: boolean;
@@ -16,6 +16,7 @@ export interface AdminProfileFull {
   phone: string;
   jobTitle: string;
   avatarInitials: string;
+  avatarInitial: string;
   accountId: string;
   role: string;
   memberSince: string;
@@ -29,68 +30,71 @@ export interface AdminProfileFull {
   location: string;
   bio: string;
   joinedAt: string;
-  avatarInitial: string;
 }
 
-function toProfile(d: ProfileDto): AdminProfileFull {
-  const parts = (d.fullName ?? '').trim().split(/\s+/);
+function buildProfile(fullName: string, email: string, role: string, userId?: number): AdminProfileFull {
+  const parts = (fullName ?? '').trim().split(/\s+/).filter(Boolean);
   const initials = parts.length >= 2
     ? (parts[0][0] + parts[parts.length - 1][0]).toUpperCase()
-    : (parts[0]?.[0] ?? 'U').toUpperCase();
+    : (parts[0]?.[0] ?? email?.[0] ?? 'U').toUpperCase();
   return {
-    fullName: d.fullName ?? '',
-    email: d.email ?? '',
-    phone: d.phone ?? '',
-    jobTitle: d.jobTitle ?? '',
+    fullName: fullName || email || 'Owner',
+    email: email || '',
+    phone: '',
+    jobTitle: role === 'OWNER' ? 'Parking Owner' : 'Driver',
     avatarInitials: initials,
     avatarInitial: initials[0],
-    accountId: `ADM-${String(d.id).padStart(6, '0')}`,
-    role: d.role ?? 'Administrator',
-    memberSince: d.createdAt ? new Date(d.createdAt).toLocaleDateString('en-US', {month: 'long', day: 'numeric', year: 'numeric'}) : '',
-    status: d.active ? 'active' : 'inactive',
-    linkedLot: d.parkingLotId ? `Lot #${d.parkingLotId}` : '—',
-    registeredEmail: d.email ?? '',
-    created: d.createdAt ? new Date(d.createdAt).toLocaleDateString() : '',
-    lastLogin: d.lastLoginAt ? new Date(d.lastLoginAt).toLocaleString() : '—',
-    twoFactorEnabled: d.twoFactorEnabled ?? false,
+    accountId: userId ? `ADM-${String(userId).padStart(6, '0')}` : '—',
+    role: role || 'OWNER',
+    memberSince: '—',
+    status: 'active',
+    linkedLot: '—',
+    registeredEmail: email || '',
+    created: '—',
+    lastLogin: '—',
+    twoFactorEnabled: false,
     preferences: {
-      emailAlerts: true,
-      smsAlerts: false,
-      pushAlerts: true,
-      weeklyDigest: true,
-      appearance: 'light',
-      language: 'English'
+      emailAlerts: true, smsAlerts: false, pushAlerts: true,
+      weeklyDigest: true, appearance: 'light', language: 'English'
     },
     location: '',
     bio: '',
-    joinedAt: d.createdAt ? new Date(d.createdAt).toLocaleDateString('en-US', {month: 'long', year: 'numeric'}) : ''
+    joinedAt: '—',
   };
 }
 
-const EMPTY_PROFILE: AdminProfileFull = {
+const EMPTY: AdminProfileFull = {
   fullName: '', email: '', phone: '', jobTitle: '',
   avatarInitials: '?', avatarInitial: '?',
-  accountId: '—', role: '—', memberSince: '—',
+  accountId: '—', role: 'OWNER', memberSince: '—',
   status: 'active', linkedLot: '—', registeredEmail: '—',
   created: '—', lastLogin: '—', twoFactorEnabled: false,
   preferences: {emailAlerts: true, smsAlerts: false, pushAlerts: true, weeklyDigest: true, appearance: 'light', language: 'English'},
-  location: '', bio: '', joinedAt: '—'
+  location: '', bio: '', joinedAt: '—',
 };
 
 @Injectable({providedIn: 'root'})
 export class ProfileStore {
-  private readonly api = inject(ProfileApiService);
+  private readonly iamStore = inject(IamStore);
 
   readonly loading = signal(false);
   readonly state = signal<'main' | 'edit'>('main');
-  readonly profile = signal<AdminProfileFull>(EMPTY_PROFILE);
+  readonly profile = signal<AdminProfileFull>(EMPTY);
+
+  constructor() {
+    effect(() => {
+      const user = this.iamStore.currentUser();
+      if (user) {
+        this.profile.set(buildProfile(user.fullName, user.email, user.role, user.userId));
+      }
+    });
+  }
 
   load(): void {
-    this.loading.set(true);
-    this.api.get().subscribe({
-      next: dto => { this.profile.set(toProfile(dto)); this.loading.set(false); },
-      error: () => this.loading.set(false)
-    });
+    const user = this.iamStore.currentUser();
+    if (user) {
+      this.profile.set(buildProfile(user.fullName, user.email, user.role, user.userId));
+    }
   }
 
   update(patch: Partial<AdminProfileFull>): void {
@@ -101,8 +105,6 @@ export class ProfileStore {
       : (parts[0]?.[0] ?? 'U').toUpperCase();
     merged.avatarInitial = merged.avatarInitials[0];
     this.profile.set(merged);
-
-    this.api.update({fullName: merged.fullName, phone: merged.phone, jobTitle: merged.jobTitle}).subscribe();
   }
 
   togglePreference(key: keyof Pick<ProfilePreferences, 'emailAlerts' | 'smsAlerts' | 'pushAlerts' | 'weeklyDigest'>): void {
