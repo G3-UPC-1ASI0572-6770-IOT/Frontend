@@ -5,12 +5,12 @@
 html {
   @include mat.theme((
     color: (
-      primary: mat.$azure-palette,
-      tertiary: mat.$blue-palette,
+      primary: mat.$cyan-palette,
+      tertiary: mat.$cyan-palette,
     ),
     typography: (
-      plain-family: 'Manrope, system-ui, sans-serif',
-      brand-family: '"Hanken Grotesk", system-ui, sans-serif',
+      plain-family: 'DM Sans, system-ui, sans-serif',
+      brand-family: '"Space Grotesk", system-ui, sans-serif',
       bold-weight: 700,
       medium-weight: 600,
       regular-weight: 400,
@@ -21,7 +21,7 @@ html {
 
 body {
   color-scheme: light;
-  background-color: #fbf8ff;
-  color: #1a1b21;
+  background-color: #F5F3EF;
+  color: #1A1918;
   margin: 0;
 }

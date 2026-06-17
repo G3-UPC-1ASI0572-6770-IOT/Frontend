@@ -17,17 +17,17 @@ import {CommonModule} from '@angular/common';
     .empty {
       display: flex; flex-direction: column; align-items: center;
       gap: 0.5rem; padding: 3rem 1.5rem; text-align: center;
-      border: 1px dashed #c5c5d4; border-radius: 16px;
+      border: 1px dashed #E7E5E0; border-radius: 16px;
       background: #fbfaff;
       animation: fadeIn 240ms ease-out both;
     }
     .icon {
-      font-size: 48px; color: #757684;
-      background: #eeedf6; padding: 0.75rem;
+      font-size: 48px; color: #78716C;
+      background: #EAE8E3; padding: 0.75rem;
       border-radius: 999px;
     }
-    .title { font-family: 'Hanken Grotesk', sans-serif; font-size: 20px; font-weight: 600; color: #1a1b21; margin: 0.25rem 0; }
-    .desc { font-family: 'Manrope', sans-serif; font-size: 14px; color: #444652; max-width: 360px; }
+    .title { font-family: 'Space Grotesk', sans-serif; font-size: 20px; font-weight: 600; color: #1A1918; margin: 0.25rem 0; }
+    .desc { font-family: 'DM Sans', sans-serif; font-size: 14px; color: #57534E; max-width: 360px; }
     @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
   `]
 })

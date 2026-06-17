@@ -28,21 +28,21 @@ import {CommonModule} from '@angular/common';
     .title-block { flex: 1; min-width: 240px; }
     .eyebrow {
       display: inline-block;
-      font-family: 'Manrope', sans-serif;
+      font-family: 'DM Sans', sans-serif;
       font-size: 12px; font-weight: 700;
       text-transform: uppercase; letter-spacing: 0.08em;
-      color: #00658b;
+      color: #00a888;
       margin-bottom: 0.25rem;
     }
     .title {
-      font-family: 'Hanken Grotesk', sans-serif;
+      font-family: 'Space Grotesk', sans-serif;
       font-size: 30px; line-height: 40px; font-weight: 700;
-      color: #001558; letter-spacing: -0.01em;
+      color: #1A1918; letter-spacing: -0.01em;
       margin: 0;
     }
     .subtitle {
-      font-family: 'Manrope', sans-serif;
-      font-size: 15px; color: #444652;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 15px; color: #57534E;
       margin: 6px 0 0;
       max-width: 760px;
     }

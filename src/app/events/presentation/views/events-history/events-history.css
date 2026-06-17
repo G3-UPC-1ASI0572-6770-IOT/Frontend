@@ -284,7 +284,7 @@ button,
 
 .alert-card.critical > .material-symbols-outlined {
   color: #b3261e;
-  background: #ffdad6;
+  background: #FFE4E6;
 }
 
 .alert-card.warning > .material-symbols-outlined {
@@ -293,7 +293,7 @@ button,
 }
 
 .alert-card.info > .material-symbols-outlined {
-  color: #00658b;
+  color: #00a888;
   background: #eafbff;
 }
 
@@ -478,11 +478,11 @@ button,
 
 .state-chip.occupied {
   color: #a61c16;
-  background: #ffdad6;
+  background: #FFE4E6;
 }
 
 .severity.info {
-  color: #00658b;
+  color: #00a888;
   background: #eafbff;
 }
 
@@ -493,7 +493,7 @@ button,
 
 .severity.critical {
   color: #b3261e;
-  background: #ffdad6;
+  background: #FFE4E6;
 }
 
 .pagination {
@@ -543,7 +543,7 @@ button,
   display: flex;
   flex-direction: column;
   overflow: hidden;
-  border: 1px solid #e3e1ea;
+  border: 1px solid #E7E5E0;
   border-radius: 16px;
   background: #ffffff;
 }
@@ -592,7 +592,7 @@ button,
 }
 
 .record-line strong {
-  color: #001558;
+  color: #1A1918;
   font-size: 18px;
 }
 
@@ -606,7 +606,7 @@ button,
 .description-block,
 .details-grid,
 .related-alerts article {
-  border: 1px solid #e3e1ea;
+  border: 1px solid #E7E5E0;
   border-radius: 10px;
   background: #fbf9ff;
 }
@@ -618,7 +618,7 @@ button,
 
 .description-block p {
   margin: 0;
-  color: #1a1b21;
+  color: #1A1918;
   line-height: 1.6;
 }
 
@@ -651,7 +651,7 @@ button,
   grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
   align-items: end;
   padding-top: 16px;
-  border-top: 1px solid #e3e1ea;
+  border-top: 1px solid #E7E5E0;
 }
 
 .status-change .arrow {
@@ -691,7 +691,7 @@ button,
   align-items: center;
   justify-content: center;
   border-radius: 999px;
-  background: #ffdad6;
+  background: #FFE4E6;
   color: #b3261e;
 }
 
@@ -715,7 +715,7 @@ button,
 
 .related-alerts button {
   border: 0;
-  color: #00658b;
+  color: #00a888;
   background: transparent;
 }
 
@@ -724,8 +724,8 @@ button,
   justify-content: flex-end;
   gap: 12px;
   padding: 14px 20px;
-  border-top: 1px solid #e3e1ea;
-  background: #f4f2fb;
+  border-top: 1px solid #E7E5E0;
+  background: #F2F0EB;
 }
 
 @media (max-width: 1100px) {
@@ -781,7 +781,7 @@ button,
 }
 
 /* Modern pass */
-.events-view{background:radial-gradient(980px 300px at 12% -25%,rgba(0,172,232,.08),transparent 58%)}
-.summary-card,.alerts-section,.empty-alerts,.history-section,.table-card,.details-modal,.flow-tab{border-color:rgba(197,197,212,.28)!important;box-shadow:0 10px 24px rgba(0,21,88,.07)}
+.events-view{background:radial-gradient(980px 300px at 12% -25%,rgba(0,212,170,.08),transparent 58%)}
+.summary-card,.alerts-section,.empty-alerts,.history-section,.table-card,.details-modal,.flow-tab{border-color:rgba(197,197,212,.28)!important;box-shadow:0 10px 24px rgba(26,25,24,.07)}
 .alert-card{transition:transform 180ms cubic-bezier(.23,1,.32,1),box-shadow 180ms ease}
-.alert-card:hover{transform:translateY(-2px);box-shadow:0 12px 22px rgba(0,21,88,.1)}
+.alert-card:hover{transform:translateY(-2px);box-shadow:0 12px 22px rgba(26,25,24,.1)}

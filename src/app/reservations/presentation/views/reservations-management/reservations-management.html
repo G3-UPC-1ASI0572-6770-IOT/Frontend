@@ -73,8 +73,8 @@
               <span class="space-chip" [attr.aria-label]="'Space ' + r.spaceLabel">{{ r.spaceLabel }}</span>
             </span>
             <span role="cell" style="font-size:12px">{{ r.parkingLotName }}</span>
-            <span role="cell" style="font-size:12px;color:#444652">{{ r.driverEmail }}</span>
-            <span role="cell" style="font-size:12px;color:#757684">{{ formatDate(r.createdAt) }}</span>
+            <span role="cell" style="font-size:12px;color:#57534E">{{ r.driverEmail }}</span>
+            <span role="cell" style="font-size:12px;color:#78716C">{{ formatDate(r.createdAt) }}</span>
             <span role="cell" [class.warn-text]="r.status === 'expiring'" style="font-size:12px">
               {{ timeLeft(r.expiresAt) }}
             </span>
@@ -124,9 +124,9 @@
               <span class="space-chip" [attr.aria-label]="'Space ' + r.spaceLabel">{{ r.spaceLabel }}</span>
             </span>
             <span role="cell" style="font-size:12px">{{ r.parkingLotName }}</span>
-            <span role="cell" style="font-size:12px;color:#444652">{{ r.driverEmail }}</span>
-            <span role="cell" style="font-size:12px;color:#757684">{{ formatDate(r.createdAt) }}</span>
-            <span role="cell" style="font-size:12px;color:#757684">
+            <span role="cell" style="font-size:12px;color:#57534E">{{ r.driverEmail }}</span>
+            <span role="cell" style="font-size:12px;color:#78716C">{{ formatDate(r.createdAt) }}</span>
+            <span role="cell" style="font-size:12px;color:#78716C">
               {{ formatDate(r.consumedAt || r.cancelledAt) }}
             </span>
             <span role="cell">

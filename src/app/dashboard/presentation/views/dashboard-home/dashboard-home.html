@@ -44,6 +44,10 @@
       </header>
       <div class="donut-wrap">
         <canvas #donutCanvas aria-label="Occupancy donut chart" role="img"></canvas>
+        <div class="donut-center" aria-hidden="true">
+          <span class="donut-pct">{{ (store.summary()?.occupancyRate ?? 0).toFixed(0) }}%</span>
+          <span class="donut-sub">occupied</span>
+        </div>
       </div>
     </section>
 

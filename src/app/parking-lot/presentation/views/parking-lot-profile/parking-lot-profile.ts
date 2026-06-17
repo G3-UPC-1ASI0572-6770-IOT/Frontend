@@ -3,10 +3,11 @@ import {CommonModule} from '@angular/common';
 import {FormBuilder, ReactiveFormsModule, Validators} from '@angular/forms';
 import {Router, RouterLink} from '@angular/router';
 import {ParkingLotStore} from '../../../application/parking-lot.store';
+import {PageHeader} from '../../../../shared/presentation/components/page-header/page-header';
 
 @Component({
   selector: 'app-parking-lot-profile',
-  imports: [CommonModule, ReactiveFormsModule, RouterLink],
+  imports: [CommonModule, ReactiveFormsModule, RouterLink, PageHeader],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './parking-lot-profile.html',
   styleUrl: './parking-lot-profile.css'

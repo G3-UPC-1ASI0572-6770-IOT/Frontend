@@ -1,25 +1,214 @@
+/* ─── Shell background (midnight navy teal) ────────────────── */
 .owner-shell {
   background:
-    radial-gradient(1000px 400px at 15% -10%, rgba(0, 172, 232, 0.12), transparent 60%),
-    radial-gradient(900px 360px at 90% 0%, rgba(0, 38, 138, 0.08), transparent 62%),
-    var(--color-background);
+    radial-gradient(ellipse 700px 450px at 30% 0%,   rgba(0,212,170,0.04), transparent 60%),
+    radial-gradient(ellipse 500px 400px at 90% 100%, rgba(4,12,27,0.03),   transparent 55%),
+    #F5F3EF;
 }
 
+/* ─── Sidebar midnight navy ───────────────────────────────── */
+aside.hidden.md\:flex {
+  background: linear-gradient(180deg, #040c1b 0%, #071428 60%, #0d1e36 100%) !important;
+  border-right: 1px solid rgba(0,212,170,0.08) !important;
+  box-shadow: 2px 0 32px rgba(4,12,27,0.55) !important;
+}
+
+/* Brand */
+.sidebar-logo-wrap {
+  display: flex; align-items: center; gap: 12px;
+  padding: 0 20px; margin-bottom: 28px;
+}
+.sidebar-logo-img {
+  width: 34px; height: 34px;
+  border-radius: 9px;
+  background: rgba(0,212,170,0.12);
+  border: 1px solid rgba(0,212,170,0.20);
+  padding: 4px; flex-shrink: 0;
+}
+.sidebar-brand-name {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 18px; font-weight: 800;
+  color: #FAFAF9; letter-spacing: -0.03em; line-height: 1;
+}
+.sidebar-brand-sub {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 10px; color: rgba(0,212,170,0.65);
+  font-weight: 600; letter-spacing: 0.12em;
+  text-transform: uppercase; margin-top: 3px;
+}
+
+/* Section label */
+.nav-section-label {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 10px; font-weight: 700;
+  letter-spacing: 0.12em; text-transform: uppercase;
+  color: rgba(255,255,255,0.18);
+  padding: 14px 24px 5px;
+}
+
+/* Nav link */
 .nav-link {
-  border-radius: 12px;
-  margin: 0 8px;
+  display: flex; align-items: center; gap: 11px;
+  padding: 9px 14px; border-radius: 10px;
+  margin: 1px 10px;
   border: 1px solid transparent;
-  transition: transform 180ms cubic-bezier(0.23, 1, 0.32, 1), background 180ms ease, color 180ms ease;
+  color: rgba(255,255,255,0.45);
+  font-family: 'DM Sans', sans-serif;
+  font-size: 13.5px; font-weight: 500;
+  text-decoration: none;
+  transition: background 180ms ease, color 180ms ease, border-color 180ms ease, transform 160ms cubic-bezier(0.23,1,0.32,1);
+  position: relative;
 }
-
+.nav-link .material-symbols-outlined {
+  font-size: 19px; flex-shrink: 0; line-height: 1;
+  width: 22px; height: 22px;
+  display: inline-flex; align-items: center; justify-content: center;
+  transition: color 180ms ease, font-variation-settings 180ms ease;
+}
+.nav-link:hover {
+  background: rgba(0,212,170,0.07);
+  color: rgba(255,255,255,0.88);
+  transform: translateX(1px);
+}
 .nav-link.active {
-  background: linear-gradient(135deg, rgba(0, 38, 138, 0.12), rgba(0, 172, 232, 0.1));
-  color: var(--color-primary-container);
-  border-color: rgba(0, 38, 138, 0.18);
+  background: rgba(0,212,170,0.12);
+  color: #5effe6;
+  border-color: rgba(0,212,170,0.22);
+  font-weight: 600;
   transform: translateX(2px);
 }
+.nav-link.active .material-symbols-outlined {
+  color: #00d4aa;
+  font-variation-settings: 'FILL' 1, 'wght' 500, 'GRAD' 0, 'opsz' 24;
+}
+/* Teal pip */
+.nav-link.active::before {
+  content: '';
+  position: absolute; left: -10px; top: 50%;
+  transform: translateY(-50%);
+  width: 3px; height: 18px;
+  border-radius: 0 3px 3px 0;
+  background: #00d4aa;
+  box-shadow: 0 0 10px rgba(0,212,170,0.55);
+}
 
-.nav-link:hover {
-  background: color-mix(in srgb, var(--color-primary-container) 7%, transparent);
-  color: var(--color-primary-container);
+/* Profile strip at bottom */
+.sidebar-profile-strip {
+  display: flex; align-items: center; gap: 10px;
+  padding: 10px 14px; margin: 0 10px 8px;
+  border-radius: 10px;
+  background: rgba(255,255,255,0.03);
+  border: 1px solid rgba(0,212,170,0.08);
+}
+.sidebar-profile-name {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 13px; font-weight: 600; color: rgba(255,255,255,0.85);
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.sidebar-profile-role {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 11px; color: rgba(0,212,170,0.65); margin-top: 2px;
+}
+
+/* Logout */
+.sidebar-logout {
+  display: flex; align-items: center; justify-content: center; gap: 8px;
+  margin: 0 10px; padding: 9px 14px; border-radius: 10px;
+  background: rgba(255,255,255,0.03);
+  border: 1px solid rgba(255,255,255,0.06);
+  color: rgba(255,255,255,0.40);
+  font-family: 'DM Sans', sans-serif; font-size: 13px; font-weight: 500;
+  text-decoration: none; cursor: pointer;
+  transition: background 180ms ease, color 180ms ease, border-color 180ms ease;
+}
+.sidebar-logout:hover {
+  background: rgba(225,29,72,0.12);
+  border-color: rgba(225,29,72,0.22);
+  color: #FDA4AF;
+}
+.sidebar-logout .material-symbols-outlined { font-size: 17px; line-height: 1; }
+
+/* Avatar in sidebar */
+.sidebar-avatar {
+  width: 32px; height: 32px; border-radius: 8px; flex-shrink: 0;
+  background: linear-gradient(135deg, #00bfa0, #00d4aa);
+  color: #040c1b;
+  display: inline-flex; align-items: center; justify-content: center;
+  font-family: 'Space Grotesk', sans-serif; font-size: 12px; font-weight: 800;
+}
+
+/* ─── Top bar ─────────────────────────────────────────────── */
+.topbar-wrap {
+  background: rgba(245,243,239,0.92);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border-bottom: 1px solid rgba(231,229,224,0.8);
+  box-shadow: 0 1px 0 rgba(4,12,27,0.04), 0 2px 8px rgba(4,12,27,0.04);
+}
+.topbar-search {
+  display: flex; align-items: center; gap: 8px;
+  background: rgba(255,255,255,0.85);
+  border: 1px solid rgba(231,229,224,0.9);
+  border-radius: 10px; padding: 0 14px; height: 38px; min-width: 240px;
+  transition: border-color 180ms ease, box-shadow 180ms ease;
+}
+.topbar-search:focus-within {
+  border-color: rgba(0,212,170,0.5);
+  box-shadow: 0 0 0 3px rgba(0,212,170,0.10);
+  background: #fff;
+}
+.topbar-search .material-symbols-outlined { font-size: 17px; line-height: 1; color: #A8A29E; flex-shrink: 0; }
+.topbar-search input {
+  background: transparent; border: none; outline: none;
+  font-family: 'DM Sans', sans-serif; font-size: 13.5px; color: #1A1918; width: 100%;
+}
+.topbar-search input::placeholder { color: #C5C2BD; }
+
+.topbar-icon-btn {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 36px; height: 36px; border-radius: 9px;
+  background: transparent; border: 1px solid transparent;
+  color: #78716C; cursor: pointer; text-decoration: none;
+  transition: background 160ms ease, border-color 160ms ease, color 160ms ease;
+}
+.topbar-icon-btn:hover {
+  background: rgba(0,212,170,0.08);
+  border-color: rgba(0,212,170,0.20);
+  color: #00a888;
+}
+.topbar-icon-btn .material-symbols-outlined { font-size: 19px; line-height: 1; }
+
+.topbar-notif-wrap { position: relative; }
+.topbar-notif-badge {
+  position: absolute; top: 6px; right: 6px;
+  width: 7px; height: 7px; border-radius: 50%;
+  background: #F43F5E; border: 2px solid #F5F3EF;
+}
+
+.topbar-avatar {
+  width: 34px; height: 34px; border-radius: 9px;
+  background: linear-gradient(135deg, #00bfa0, #00d4aa);
+  color: #040c1b;
+  display: inline-flex; align-items: center; justify-content: center;
+  font-family: 'Space Grotesk', sans-serif; font-size: 12px; font-weight: 800;
+  text-decoration: none; flex-shrink: 0;
+  box-shadow: 0 2px 8px rgba(0,212,170,0.25);
+  transition: box-shadow 180ms ease, transform 180ms ease;
+}
+.topbar-avatar:hover { transform: translateY(-1px); box-shadow: 0 4px 14px rgba(0,212,170,0.35); }
+
+/* ─── Mobile drawer ───────────────────────────────────────── */
+.mobile-drawer {
+  background: linear-gradient(180deg, #040c1b 0%, #0d1e36 100%);
+}
+.mobile-drawer-nav-link {
+  display: flex; align-items: center; gap: 11px; padding: 10px 14px;
+  border-radius: 10px; color: rgba(255,255,255,0.5);
+  font-family: 'DM Sans', sans-serif; font-size: 14px; font-weight: 500;
+  text-decoration: none; transition: background 160ms ease, color 160ms ease;
+}
+.mobile-drawer-nav-link:hover { background: rgba(0,212,170,0.07); color: #fff; }
+.mobile-drawer-nav-link.active {
+  background: rgba(0,212,170,0.12); color: #5effe6;
+  border: 1px solid rgba(0,212,170,0.22);
 }

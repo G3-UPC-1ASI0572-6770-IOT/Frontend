@@ -35,7 +35,7 @@ export type ChipStatus =
       gap: 0.5rem;
       padding: 0.25rem 0.75rem;
       border-radius: 999px;
-      font-family: 'Manrope', sans-serif;
+      font-family: 'DM Sans', sans-serif;
       font-size: 12px;
       font-weight: 600;
       letter-spacing: 0.02em;
@@ -53,19 +53,19 @@ export type ChipStatus =
       50% { box-shadow: 0 0 0 4px transparent; }
     }
     .is-available, .is-online, .is-active, .is-resolved {
-      background: rgba(22, 163, 74, 0.12); color: #16a34a;
+      background: rgba(22, 163, 74, 0.12); color: #10B981;
     }
     .is-occupied, .is-critical, .is-cancelled {
-      background: rgba(220, 38, 38, 0.12); color: #dc2626;
+      background: rgba(220, 38, 38, 0.12); color: #F43F5E;
     }
     .is-reserved, .is-warning, .is-expiring {
-      background: rgba(245, 158, 11, 0.14); color: #b45309;
+      background: rgba(0,212,170,0.12); color: #00a888;
     }
     .is-offline, .is-finished {
-      background: rgba(100, 116, 139, 0.14); color: #475569;
+      background: rgba(100, 116, 139, 0.14); color: #78716C;
     }
     .is-maintenance, .is-info {
-      background: rgba(0, 172, 232, 0.14); color: #00658b;
+      background: rgba(0,212,170,0.12); color: #00a888;
     }
   `]
 })

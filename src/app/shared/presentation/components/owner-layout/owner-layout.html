@@ -1,89 +1,129 @@
-<div class="owner-shell min-h-screen bg-background text-on-background">
-  <aside class="hidden md:flex fixed left-0 top-0 h-screen w-64 bg-surface-container-low/95 backdrop-blur border-r border-outline-variant/30 z-30">
-    <div class="w-full flex flex-col py-6">
-      <div class="flex items-center gap-3 mb-8 px-6">
-        <div class="w-10 h-10 flex items-center justify-center">
-          <img src="/icono.png" alt="ParkingNow Logo" class="w-full h-full object-contain" />
-        </div>
-        <div>
-          <h1 class="text-xl font-headline-md text-primary-container leading-none">ParkingNow</h1>
-          <p class="text-xs text-on-surface-variant">Owner Panel</p>
+<div class="owner-shell min-h-screen">
+
+  <!-- ── Desktop sidebar ──────────────────────────────────── -->
+  <aside class="hidden md:flex fixed left-0 top-0 h-screen w-64 z-30 flex-col py-6">
+
+    <!-- Brand -->
+    <div class="sidebar-logo-wrap">
+      <img src="/icono.png" alt="ParkingNow Logo" class="sidebar-logo-img" />
+      <div>
+        <div class="sidebar-brand-name">ParkingNow</div>
+        <div class="sidebar-brand-sub">Owner Panel</div>
+      </div>
+    </div>
+
+    <!-- Nav -->
+    <nav class="flex-1 overflow-y-auto" aria-label="Main navigation">
+      <div class="nav-section-label">Main</div>
+      @for (item of navItems; track item.route) {
+        <a
+          [routerLink]="item.route"
+          routerLinkActive="active"
+          class="nav-link"
+          [attr.aria-label]="item.label"
+        >
+          <span class="material-symbols-outlined" aria-hidden="true">{{ item.icon }}</span>
+          <span>{{ item.label }}</span>
+        </a>
+      }
+    </nav>
+
+    <!-- Profile strip -->
+    <div class="px-3 pt-3" style="border-top: 1px solid rgba(255,255,255,0.06); margin-top: 8px;">
+      <div class="sidebar-profile-strip">
+        <div class="sidebar-avatar">{{ profileStore.profile().avatarInitials }}</div>
+        <div style="min-width:0;">
+          <div class="sidebar-profile-name">{{ profileStore.profile().fullName }}</div>
+          <div class="sidebar-profile-role">Owner</div>
         </div>
       </div>
-
-      <nav class="flex-1 space-y-2">
-        @for (item of navItems; track item.route) {
-          <a
-            [routerLink]="item.route"
-            routerLinkActive="active"
-            class="nav-link flex items-center gap-3 px-4 py-2.5 text-on-surface-variant transition-all"
-          >
-            <span class="material-symbols-outlined text-[21px]">{{ item.icon }}</span>
-            <span class="text-sm font-semibold tracking-wide">{{ item.label }}</span>
-          </a>
-        }
-      </nav>
-
-      <div class="px-4 pt-4 border-t border-outline-variant/30">
-      <a [routerLink]="'/iam/sign-in'" class="export-link flex items-center justify-center gap-2 px-4 py-3 rounded-lg bg-primary-container text-white">
-        <span class="material-symbols-outlined">logout</span>
-        <span class="text-sm font-semibold">Logout</span>
+      <a [routerLink]="'/iam/sign-in'" class="sidebar-logout" aria-label="Sign out">
+        <span class="material-symbols-outlined" aria-hidden="true">logout</span>
+        <span>Sign Out</span>
       </a>
-      </div>
     </div>
   </aside>
 
-  <header class="md:ml-64 h-[68px] bg-background/90 backdrop-blur border-b border-outline-variant/20 sticky top-0 z-20">
-    <div class="h-full px-4 md:px-8 flex items-center justify-between gap-4">
-      <button class="md:hidden p-2 rounded-lg border border-outline-variant" (click)="toggleMobileMenu()">
+  <!-- ── Top bar ───────────────────────────────────────────── -->
+  <header class="topbar-wrap md:ml-64 h-[64px] sticky top-0 z-20">
+    <div class="h-full px-4 md:px-6 flex items-center justify-between gap-4">
+
+      <!-- Mobile menu button -->
+      <button
+        class="md:hidden topbar-icon-btn"
+        (click)="toggleMobileMenu()"
+        aria-label="Open navigation menu"
+      >
         <span class="material-symbols-outlined">menu</span>
       </button>
 
-      <div class="hidden sm:flex items-center bg-surface-container-low/90 border border-outline-variant/20 rounded-xl px-4 h-10 min-w-72">
-        <span class="material-symbols-outlined text-on-surface-variant">search</span>
-        <input class="w-full bg-transparent border-0 outline-none px-2 text-sm" placeholder="Search across dashboard..." />
+      <!-- Search -->
+      <div class="topbar-search hidden sm:flex flex-1 max-w-xs">
+        <span class="material-symbols-outlined" aria-hidden="true">search</span>
+        <input placeholder="Search dashboard…" aria-label="Search dashboard" />
       </div>
 
-      <div class="flex items-center gap-2 md:gap-4">
-        <button class="p-2 rounded-full hover:bg-surface-container text-on-surface-variant transition-colors">
-          <span class="material-symbols-outlined">notifications</span>
-        </button>
-        <a routerLink="/profile/main" class="p-2 rounded-full hover:bg-surface-container text-on-surface-variant transition-colors" title="Settings">
+      <div class="flex items-center gap-2">
+        <!-- Notifications -->
+        <div class="topbar-notif-wrap">
+          <button class="topbar-icon-btn" aria-label="Notifications">
+            <span class="material-symbols-outlined">notifications</span>
+          </button>
+          @if (notificationsCount() > 0) {
+            <span class="topbar-notif-badge" aria-label="{{ notificationsCount() }} notifications"></span>
+          }
+        </div>
+
+        <!-- Settings -->
+        <a routerLink="/profile/main" class="topbar-icon-btn" aria-label="Settings">
           <span class="material-symbols-outlined">settings</span>
         </a>
-        <a routerLink="/profile/main" class="w-9 h-9 rounded-full border-2 border-outline-variant bg-primary-container text-white flex items-center justify-center font-bold text-sm shadow-sm no-underline" [title]="profileStore.profile().fullName">
+
+        <!-- Avatar -->
+        <a routerLink="/profile/main" class="topbar-avatar" [title]="profileStore.profile().fullName" aria-label="Profile">
           {{ profileStore.profile().avatarInitials }}
         </a>
       </div>
     </div>
   </header>
 
+  <!-- ── Mobile drawer backdrop ────────────────────────────── -->
   @if (mobileMenuOpen()) {
-    <div class="md:hidden fixed inset-0 bg-black/40 z-40" (click)="closeMobileMenu()"></div>
-    <aside class="md:hidden fixed left-0 top-0 h-screen w-72 bg-white z-50 p-5 flex flex-col">
-      <div class="flex items-center justify-between mb-6">
+    <div
+      class="md:hidden fixed inset-0 bg-black/50 z-40 backdrop-blur-sm"
+      (click)="closeMobileMenu()"
+      aria-hidden="true"
+    ></div>
+    <aside class="mobile-drawer md:hidden fixed left-0 top-0 h-screen w-72 z-50 flex flex-col py-6">
+      <div class="flex items-center justify-between px-5 mb-6">
         <div class="flex items-center gap-3">
-          <div class="w-8 h-8 flex items-center justify-center">
-            <img src="/icono.png" alt="ParkingNow Logo" class="w-full h-full object-contain" />
-          </div>
-          <h2 class="text-xl font-headline-md text-primary">ParkingNow</h2>
+          <img src="/icono.png" alt="ParkingNow Logo" class="sidebar-logo-img" style="width:32px;height:32px;" />
+          <span class="sidebar-brand-name" style="font-size:18px;">ParkingNow</span>
         </div>
-        <button class="p-1 text-on-surface-variant" (click)="closeMobileMenu()">
+        <button class="topbar-icon-btn" style="color:rgba(255,255,255,0.6);" (click)="closeMobileMenu()" aria-label="Close menu">
           <span class="material-symbols-outlined">close</span>
         </button>
       </div>
-      <nav class="flex-1 space-y-2">
+      <nav class="flex-1 px-2" aria-label="Mobile navigation">
         @for (item of navItems; track item.route) {
-          <a [routerLink]="item.route" (click)="closeMobileMenu()" routerLinkActive="active" class="nav-link flex items-center gap-3 px-4 py-3 rounded-xl text-on-surface-variant">
-            <span class="material-symbols-outlined">{{ item.icon }}</span>
-            <span class="text-sm font-semibold tracking-wide">{{ item.label }}</span>
+          <a
+            [routerLink]="item.route"
+            routerLinkActive="active"
+            class="mobile-drawer-nav-link"
+            (click)="closeMobileMenu()"
+            [attr.aria-label]="item.label"
+          >
+            <span class="material-symbols-outlined" aria-hidden="true">{{ item.icon }}</span>
+            <span>{{ item.label }}</span>
           </a>
         }
       </nav>
     </aside>
   }
 
-  <main class="md:ml-64 p-4 md:p-6 max-w-[1600px] animate-[fadeUp_.28s_ease-out]">
+  <!-- ── Main content ──────────────────────────────────────── -->
+  <main class="md:ml-64 p-4 md:p-6 min-h-[calc(100vh-64px)]" style="animation: fadeUp .28s ease-out both;">
     <router-outlet />
   </main>
+
 </div>

@@ -11,7 +11,7 @@
 
 .dialog-header,
 .dialog-footer {
-  background: #fbf8ff;
+  background: #F8F6F2;
   padding: 16px;
   display: flex;
   justify-content: space-between;
@@ -29,7 +29,7 @@
 .dialog-header h4 {
   margin: 0;
   color: var(--color-primary);
-  font-family: 'Hanken Grotesk', sans-serif;
+  font-family: 'Space Grotesk', sans-serif;
   font-size: 20px;
   line-height: 30px;
 }
@@ -50,13 +50,13 @@
 }
 .status .dot { width: 8px; height: 8px; border-radius: 9999px; background: currentColor; }
 .status[data-status='active'] { background: rgba(220, 252, 231, 0.5); color: #137333; }
-.status[data-status='expiring'] { background: #fef3c7; color: #9a6700; }
+.status[data-status='expiring'] { background: rgba(0,212,170,0.12); color: #00a888; }
 .status[data-status='finished'],
 .status[data-status='cancelled'] { background: #fee2e2; color: #b3261e; }
 
 .details-grid {
   border: 1px solid color-mix(in srgb, var(--color-outline-variant) 10%, transparent);
-  background: #f4f2fb;
+  background: #F2F0EB;
   border-radius: 8px;
   padding: 16px;
   display: grid;

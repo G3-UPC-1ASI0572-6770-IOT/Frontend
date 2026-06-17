@@ -31,7 +31,7 @@ export class DashboardStore {
       labels: ['Occupied', 'Reserved', 'Free'],
       datasets: [{
         data: [s.occupiedSpaces, s.reservedSpaces, s.freeSpaces],
-        backgroundColor: ['#dc2626', '#f59e0b', '#16a34a'],
+        backgroundColor: ['#F43F5E', '#00d4aa', '#10B981'],
         borderWidth: 0,
         hoverOffset: 6,
       }]
@@ -46,8 +46,8 @@ export class DashboardStore {
       datasets: [{
         label: 'Revenue S/.',
         data: s.last7DaysRevenue.map((d: any) => Number(d.amount)),
-        backgroundColor: '#00268a',
-        borderRadius: 6,
+        backgroundColor: '#00d4aa',
+        borderRadius: 8,
         borderSkipped: false,
       }]
     };
@@ -56,13 +56,16 @@ export class DashboardStore {
   readonly recentIotEvents = computed(() => {
     const s = this.summary();
     if (!s?.recentIotEvents) return [];
-    return s.recentIotEvents.map((e: any) => ({
-      ts: formatAgo(e.ts),
-      spaceLabel: e.spaceLabel,
-      status: e.status,
-      icon: e.status === 'OCCUPIED' ? 'directions_car' : 'check_circle',
-      variant: e.status === 'OCCUPIED' ? 'danger' : 'success',
-    }));
+    return s.recentIotEvents.map((e: any) => {
+      const status = e.detectedStatus ?? e.status ?? 'FREE';
+      return {
+        ts: formatAgo(e.receivedAt ?? e.ts ?? ''),
+        spaceLabel: e.spaceCode ?? e.spaceLabel ?? '—',
+        status,
+        icon: status === 'OCCUPIED' ? 'directions_car' : 'check_circle',
+        variant: status === 'OCCUPIED' ? 'danger' : 'success',
+      };
+    });
   });
 
   load(): void {

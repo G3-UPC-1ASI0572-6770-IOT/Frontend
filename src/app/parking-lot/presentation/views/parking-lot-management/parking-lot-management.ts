@@ -3,10 +3,11 @@ import {CommonModule} from '@angular/common';
 import {FormsModule} from '@angular/forms';
 import {Router, RouterLink} from '@angular/router';
 import {ParkingLotStore} from '../../../application/parking-lot.store';
+import {PageHeader} from '../../../../shared/presentation/components/page-header/page-header';
 
 @Component({
   selector: 'app-parking-lot-management',
-  imports: [CommonModule, FormsModule, RouterLink],
+  imports: [CommonModule, FormsModule, RouterLink, PageHeader],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './parking-lot-management.html',
   styleUrl: './parking-lot-management.css'
