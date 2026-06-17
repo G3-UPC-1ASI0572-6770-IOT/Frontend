@@ -26,35 +26,61 @@
   gap: 12px;
   padding: 16px;
   background: #fff;
-  border-radius: 14px;
-  border: 1px solid rgba(197,197,212,.3);
-  box-shadow: 0 4px 12px rgba(26,25,24,.05);
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(26,25,24,.06);
 }
 .pl-kpi-icon {
-  font-size: 22px;
-  color: #1A1918;
-  background: rgba(26,25,24,.08);
-  border-radius: 10px;
   width: 40px; height: 40px;
+  border-radius: 10px;
+  background: rgba(26,25,24,.08);
   display: flex; align-items: center; justify-content: center;
   flex-shrink: 0;
 }
-.pl-kpi.occupied .pl-kpi-icon { color: #F43F5E; background: #fee2e2; }
-.pl-kpi.rate .pl-kpi-icon { color: #00a888; background: rgba(0,212,170,0.10); }
+.pl-kpi-icon .material-symbols-outlined {
+  font-size: 20px; line-height: 1;
+  color: #57534E;
+}
+.pl-kpi.occupied .pl-kpi-icon { background: #fee2e2; }
+.pl-kpi.occupied .pl-kpi-icon .material-symbols-outlined { color: #F43F5E; }
+.pl-kpi.rate .pl-kpi-icon { background: rgba(0,212,170,0.10); }
+.pl-kpi.rate .pl-kpi-icon .material-symbols-outlined { color: #00a888; }
 .pl-kpi strong { display: block; font-size: 22px; font-weight: 800; color: #1A1918; }
 .pl-kpi span { display: block; font-size: 11px; color: #78716C; margin-top: 2px; }
+
+/* Header action buttons */
+.pl-btn-primary-accent {
+  display: inline-flex; align-items: center; gap: 7px;
+  padding: 9px 18px; border-radius: 10px;
+  background: #00d4aa; color: #040c1b;
+  font: 600 13px/1 'DM Sans', sans-serif;
+  text-decoration: none; border: none;
+  transition: background 160ms ease, transform 160ms ease;
+}
+.pl-btn-primary-accent:hover { background: #00bfa0; transform: translateY(-1px); }
+.pl-btn-primary-accent .material-symbols-outlined { font-size: 16px; line-height: 1; }
+
+.pl-btn-outline-header {
+  display: inline-flex; align-items: center; gap: 7px;
+  padding: 9px 18px; border-radius: 10px;
+  background: transparent; color: #1A1918;
+  border: 1.5px solid rgba(26,25,24,.25);
+  font: 600 13px/1 'DM Sans', sans-serif;
+  text-decoration: none;
+  transition: background 160ms ease, border-color 160ms ease, transform 160ms ease;
+}
+.pl-btn-outline-header:hover { background: rgba(26,25,24,.05); border-color: rgba(26,25,24,.5); transform: translateY(-1px); }
+.pl-btn-outline-header .material-symbols-outlined { font-size: 16px; line-height: 1; }
 
 /* Lot card */
 .pl-card {
   background: #fff;
-  border-radius: 16px;
-  border: 1px solid rgba(197,197,212,.3);
-  box-shadow: 0 8px 24px rgba(26,25,24,.07);
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(26,25,24,.07);
   padding: 20px;
   margin-bottom: 16px;
   transition: box-shadow 180ms ease, transform 180ms ease;
 }
-.pl-card:hover { box-shadow: 0 12px 32px rgba(26,25,24,.12); transform: translateY(-1px); }
+.pl-card:hover { box-shadow: 0 6px 20px rgba(26,25,24,.12); transform: translateY(-1px); }
 
 .pl-card-header {
   display: flex;

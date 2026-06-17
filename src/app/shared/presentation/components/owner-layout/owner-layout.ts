@@ -15,7 +15,6 @@ export class OwnerLayout implements OnInit {
   protected readonly mobileMenuOpen = signal(false);
   protected readonly notificationsCount = signal(3);
   protected readonly profileStore = inject(ProfileStore);
-
   constructor(private readonly router: Router) {}
 
   ngOnInit(): void {

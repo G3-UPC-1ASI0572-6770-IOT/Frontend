@@ -75,9 +75,8 @@
 
 /* Camera card */
 .camera-card {
-  background: #fff; border-radius: 18px;
-  border: 1px solid rgba(197,197,212,.3);
-  box-shadow: 0 10px 32px rgba(26,25,24,.07);
+  background: #fff; border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(26,25,24,.07);
   overflow: hidden; margin-bottom: 20px;
 }
 .cam-header {

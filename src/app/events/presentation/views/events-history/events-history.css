@@ -782,6 +782,6 @@ button,
 
 /* Modern pass */
 .events-view{background:radial-gradient(980px 300px at 12% -25%,rgba(0,212,170,.08),transparent 58%)}
-.summary-card,.alerts-section,.empty-alerts,.history-section,.table-card,.details-modal,.flow-tab{border-color:rgba(197,197,212,.28)!important;box-shadow:0 10px 24px rgba(26,25,24,.07)}
+.summary-card,.alerts-section,.empty-alerts,.history-section,.table-card,.details-modal,.flow-tab{border-color:transparent!important;box-shadow:0 2px 8px rgba(26,25,24,.07)}
 .alert-card{transition:transform 180ms cubic-bezier(.23,1,.32,1),box-shadow 180ms ease}
 .alert-card:hover{transform:translateY(-2px);box-shadow:0 12px 22px rgba(26,25,24,.1)}

@@ -65,32 +65,16 @@
 /* ── Base card ────────────────────────────────────────────── */
 .chart-card, .events-card, .health-card {
   background: #FFFFFF;
-  border-radius: 18px;
-  border: 1px solid rgba(0,212,170,0.10);
-  box-shadow:
-    0 1px 3px rgba(4,12,27,0.03),
-    0 8px 24px rgba(4,12,27,0.06),
-    0 1px 0 rgba(255,255,255,0.9) inset;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(4,12,27,0.07);
   padding: 22px;
   overflow: hidden;
-  transition: transform 220ms cubic-bezier(0.23,1,0.32,1), box-shadow 220ms ease;
+  transition: transform 200ms cubic-bezier(0.23,1,0.32,1), box-shadow 200ms ease;
   position: relative;
 }
 .chart-card:hover, .events-card:hover, .health-card:hover {
   transform: translateY(-2px);
-  box-shadow:
-    0 4px 12px rgba(4,12,27,0.06),
-    0 16px 40px rgba(4,12,27,0.09);
-}
-
-/* Teal top stripe on chart cards */
-.chart-card::before {
-  content: '';
-  position: absolute;
-  top: 0; left: 0; right: 0;
-  height: 3px;
-  background: linear-gradient(90deg, #00bfa0, #00d4aa, #5effe6, #00d4aa, #00bfa0);
-  border-radius: 18px 18px 0 0;
+  box-shadow: 0 6px 20px rgba(4,12,27,0.10);
 }
 
 .chart-card     { grid-area: donut; }

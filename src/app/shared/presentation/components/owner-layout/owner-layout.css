@@ -81,16 +81,6 @@ aside.hidden.md\:flex {
   color: #00d4aa;
   font-variation-settings: 'FILL' 1, 'wght' 500, 'GRAD' 0, 'opsz' 24;
 }
-/* Teal pip */
-.nav-link.active::before {
-  content: '';
-  position: absolute; left: -10px; top: 50%;
-  transform: translateY(-50%);
-  width: 3px; height: 18px;
-  border-radius: 0 3px 3px 0;
-  background: #00d4aa;
-  box-shadow: 0 0 10px rgba(0,212,170,0.55);
-}
 
 /* Profile strip at bottom */
 .sidebar-profile-strip {

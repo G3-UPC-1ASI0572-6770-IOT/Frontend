@@ -1,13 +1,12 @@
 <section class="pl-management" aria-label="Parking Lot Management">
 
   <app-page-header
-    eyebrow="OWNER · PARKING LOT"
     title="Parking Lot"
     subtitle="View and manage your registered parking lot. Update settings and navigate to profile or spaces.">
-    <a routerLink="/parking-lot/profile" class="primary-btn" aria-label="Go to parking lot profile">
+    <a routerLink="/parking-lot/profile" class="pl-btn-primary-accent" aria-label="Go to parking lot profile">
       <span class="material-symbols-outlined">edit</span> Edit Profile
     </a>
-    <a routerLink="/monitoring" class="export-btn" aria-label="View spaces monitoring">
+    <a routerLink="/monitoring" class="pl-btn-outline-header" aria-label="View spaces monitoring">
       <span class="material-symbols-outlined">grid_view</span> Spaces
     </a>
   </app-page-header>
@@ -21,28 +20,36 @@
   <!-- Summary stats -->
   <div class="pl-kpi-row" role="list" aria-label="Parking lot summary">
     <div class="pl-kpi" role="listitem">
-      <span class="material-symbols-outlined pl-kpi-icon" aria-hidden="true">local_parking</span>
+      <div class="pl-kpi-icon" aria-hidden="true">
+        <span class="material-symbols-outlined">local_parking</span>
+      </div>
       <div>
         <strong aria-label="{{ store.summary().lots }} registered lots">{{ store.summary().lots }}</strong>
         <span>Registered Lot{{ store.summary().lots !== 1 ? 's' : '' }}</span>
       </div>
     </div>
     <div class="pl-kpi" role="listitem">
-      <span class="material-symbols-outlined pl-kpi-icon" aria-hidden="true">grid_view</span>
+      <div class="pl-kpi-icon" aria-hidden="true">
+        <span class="material-symbols-outlined">grid_view</span>
+      </div>
       <div>
         <strong aria-label="{{ store.summary().capacity }} total spaces">{{ store.summary().capacity }}</strong>
         <span>Total Spaces</span>
       </div>
     </div>
     <div class="pl-kpi occupied" role="listitem">
-      <span class="material-symbols-outlined pl-kpi-icon" aria-hidden="true">directions_car</span>
+      <div class="pl-kpi-icon" aria-hidden="true">
+        <span class="material-symbols-outlined">directions_car</span>
+      </div>
       <div>
         <strong aria-label="{{ store.summary().occupied }} occupied spaces">{{ store.summary().occupied }}</strong>
         <span>Occupied</span>
       </div>
     </div>
     <div class="pl-kpi rate" role="listitem">
-      <span class="material-symbols-outlined pl-kpi-icon" aria-hidden="true">donut_large</span>
+      <div class="pl-kpi-icon" aria-hidden="true">
+        <span class="material-symbols-outlined">donut_large</span>
+      </div>
       <div>
         <strong aria-label="{{ store.summary().occupancy }} percent occupancy rate">{{ store.summary().occupancy }}%</strong>
         <span>Occupancy Rate</span>

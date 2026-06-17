@@ -165,4 +165,4 @@
 
 /* Modern pass */
 .iot-view{background:radial-gradient(900px 280px at 10% -20%,rgba(0,212,170,.08),transparent 58%)}
-.panel,.summary-card,.flow-tab{border-color:rgba(197,197,212,.28)!important;box-shadow:0 10px 24px rgba(26,25,24,.07)}
+.panel,.summary-card,.flow-tab{border-color:transparent!important;box-shadow:0 2px 8px rgba(26,25,24,.07)}

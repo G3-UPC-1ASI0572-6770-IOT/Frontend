@@ -541,6 +541,6 @@ select {
 
 /* Modern pass */
 .spaces-view{background:radial-gradient(900px 280px at 10% -20%,rgba(0,212,170,.08),transparent 55%),radial-gradient(900px 260px at 90% -30%,rgba(26,25,24,.08),transparent 60%)}
-.spaces-topbar,.page-hero,.panel{backdrop-filter:blur(4px);border-color:rgba(197,197,212,.28);box-shadow:0 10px 24px rgba(26,25,24,.07)}
+.spaces-topbar,.page-hero,.panel{backdrop-filter:blur(4px);border-color:transparent;box-shadow:0 2px 8px rgba(26,25,24,.07)}
 .summary-card{position:relative;overflow:hidden}
 .summary-card::after{content:'';position:absolute;right:-28px;top:-28px;width:92px;height:92px;border-radius:999px;background:rgba(26,25,24,.07)}

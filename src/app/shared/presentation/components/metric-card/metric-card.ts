@@ -29,41 +29,23 @@ import {CommonModule} from '@angular/common';
     .metric-card {
       position: relative;
       background: #FFFFFF;
-      border-radius: 18px;
+      border-radius: 12px;
       padding: 20px 20px 16px;
-      border: 1px solid rgba(231,229,224,0.8);
-      box-shadow:
-        0 1px 3px rgba(26,25,24,0.03),
-        0 8px 24px rgba(26,25,24,0.06);
+      box-shadow: 0 2px 8px rgba(26,25,24,0.07);
       overflow: hidden;
-      transition: transform 220ms cubic-bezier(0.23,1,0.32,1), box-shadow 220ms ease;
-      animation: rise 300ms ease-out both;
+      transition: transform 200ms cubic-bezier(0.23,1,0.32,1), box-shadow 200ms ease;
+      animation: rise 280ms ease-out both;
       cursor: default;
     }
-    /* Subtle tone tint on card bg */
-    .tone-accent  { background: linear-gradient(145deg, #fff 60%, rgba(0,212,170,0.05)); }
-    .tone-success { background: linear-gradient(145deg, #fff 60%, rgba(16,185,129,0.05)); }
-    .tone-danger  { background: linear-gradient(145deg, #fff 60%, rgba(244,63,94,0.05)); }
-    .tone-warning { background: linear-gradient(145deg, #fff 60%, rgba(0,212,170,0.05)); }
-
-    /* Top accent line */
-    .metric-card::before {
-      content: '';
-      position: absolute;
-      top: 0; left: 0; right: 0;
-      height: 3px; border-radius: 18px 18px 0 0;
-      background: transparent;
-      transition: background 220ms ease;
-    }
-    .tone-accent::before, .tone-warning::before { background: linear-gradient(90deg, #00d4aa, #5effe6); }
-    .tone-success::before { background: linear-gradient(90deg, #10B981, #34D399); }
-    .tone-danger::before  { background: linear-gradient(90deg, #F43F5E, #FB7185); }
+    /* Tone: left accent via icon bg color — no stripes */
+    .tone-accent  { background: #fff; }
+    .tone-success { background: #fff; }
+    .tone-danger  { background: #fff; }
+    .tone-warning { background: #fff; }
 
     .metric-card:hover {
-      transform: translateY(-3px);
-      box-shadow:
-        0 4px 16px rgba(26,25,24,0.07),
-        0 16px 40px rgba(26,25,24,0.09);
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(26,25,24,0.10);
     }
 
     .head {

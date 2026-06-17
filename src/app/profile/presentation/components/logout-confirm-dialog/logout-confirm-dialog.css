@@ -5,7 +5,7 @@
   border-radius: 16px;
   background: #fff;
   padding: 28px;
-  box-shadow: 0 8px 30px -4px rgba(0,0,0,0.12), 0 0 0 1px rgba(197,197,212,0.25);
+  box-shadow: 0 4px 20px rgba(0,0,0,0.14);
   text-align: center;
   animation: ld-pop 280ms cubic-bezier(0.34,1.56,0.64,1) both;
 }

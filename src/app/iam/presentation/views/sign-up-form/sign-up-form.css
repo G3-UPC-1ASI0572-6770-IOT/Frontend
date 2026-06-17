@@ -110,8 +110,8 @@
 
 .pn-card {
   width: 100%; max-width: 420px; background: #fff;
-  border: 1px solid rgba(197,197,212,.28); border-radius: 22px; padding: 32px;
-  box-shadow: 0 20px 56px -10px rgba(26,25,24,.11);
+  border-radius: 14px; padding: 32px;
+  box-shadow: 0 4px 20px rgba(26,25,24,.10);
   animation: pn-rise 360ms cubic-bezier(.23,1,.32,1) both;
 }
 .pn-card--wide { max-width: 620px; }

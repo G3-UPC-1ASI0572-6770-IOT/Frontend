@@ -123,6 +123,6 @@
 
 /* Modern pass */
 .monitoring-view{background:radial-gradient(950px 280px at 10% -20%,rgba(0,212,170,.08),transparent 58%)}
-.summary-card,.wide-card,.filter-card,.space-card,.footer-card,.flow-tab{border-color:rgba(197,197,212,.28)!important;box-shadow:0 10px 24px rgba(26,25,24,.07)}
+.summary-card,.wide-card,.filter-card,.space-card,.footer-card,.flow-tab{border-color:transparent!important;box-shadow:0 2px 8px rgba(26,25,24,.07)}
 .space-card{transition:transform 180ms cubic-bezier(.23,1,.32,1),box-shadow 180ms ease}
 .space-card:hover{transform:translateY(-2px);box-shadow:0 14px 30px rgba(26,25,24,.12)}
